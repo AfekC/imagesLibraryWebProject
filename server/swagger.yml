@@ -1,0 +1,271 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
+
+servers:
+  - url: http://api.example.com/v1
+    description: Optional server description, e.g. Main (production) server
+  - url: http://staging-api.example.com
+    description: Optional server description, e.g. Internal staging server for testing
+
+paths:
+  /item/{id}:
+    get:
+      summary: download a file
+      responses:
+        '200':
+          description: secceded
+        '400': 
+          description: error while download
+        '500':
+          description: error while accessing file
+    delete:
+      summary: delete an item
+      responses:
+        '200':
+          description: Upload secceded
+        '400': 
+          description: error while creation
+  /item/{id}/users:
+    get:
+      summary: get users with access to the item
+      responses:
+        '200':
+          description: secceded
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  type: string
+        '400': 
+          description: error
+  /item/access/{id}:
+    post:
+      summary: change the authorized users who can access the item
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              isPublic:
+                type: boolean
+              usersToShare:
+                type: array
+      responses:
+        '200':
+          description: secceded
+        '400': 
+          description: error while changing access
+  /item/dir/{id}:
+    get:
+      summary: Return all items in the directory specified
+      responses:
+        '200':
+          description: Returns a list of items
+          content:
+            application/json:
+              schema:
+                type: array
+  /item/file/upload:
+    post:
+      summary: Upload multiple files to directory
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              files:
+                type: array
+              parentItem:
+                type: string
+              isPublic:
+                type: boolean
+              creator:
+                type: string
+              usersToShare:
+                type: array
+      responses:
+        '200':
+          description: Upload secceded
+        '400': 
+          description: error while creation
+  /item/folder/upload:
+    post:
+      summary: Upload a folder in specified folder
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              parentItem:
+                type: string
+              isPublic:
+                type: boolean
+              creator:
+                type: string
+              usersToShare:
+                type: array
+      responses:
+        '200': 
+          description: created seccesfuly
+        '400': 
+          description: error while creation
+  /user:
+    get:
+      summary: return user by token.
+      responses:
+        '200':
+          description: returns a user
+          content:
+            application/json:
+              schema: 
+                type: object
+  /user/login:
+    post:
+      summary: login to the website
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+              password:
+                type: string
+      responses:
+        '200':
+          description: login successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  accessToken: 
+                    type: string
+                  user:
+                    type: object
+        '401':
+          description: invalid username or password
+  /user/signin:
+    post:
+      summary: signin to the website
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              userName:
+                type: string
+              password:
+                type: string
+      responses:
+        '200':
+          description: signin successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  accessToken: 
+                    type: string
+                  user:
+                    type: object
+        '401':
+          description: error creating user
+  /user/all:
+    get:
+      summary: return all users.
+      responses:
+        '200':
+          description: returns all users
+          content:
+            application/json:
+              schema: 
+                type: array
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                      username:
+                        type: string
+  /user/update:
+    post:
+      summary: update user's data
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+      responses:
+        '200':
+          description: succeded
+        '401':
+          description: authorization error
+  /user/update/password:
+    post:
+      summary: update user's password
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              oldPassword:
+                type: string
+              newPassword:
+                type: string
+      responses:
+        '200':
+          description: succeded
+        '401':
+          description: authorization error
+  /user/update/image:
+    post:
+      summary: update user's image
+      parameters:
+        - in: path
+          required: true
+          name: file
+          schema:
+            type: object
+      responses:
+        '200':
+          description: succeded
+        '401':
+          description: authorization error
+  /user/username/{id}:
+    get:
+      summary: return username by id.
+      responses:
+        '200':
+          description: returns the username requested
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  username:
+                    type: string
