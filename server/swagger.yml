@@ -13,6 +13,8 @@ servers:
 paths:
   /item/{id}:
     get:
+      security:
+        - bearerAuth: []
       summary: download a file
       responses:
         '200':
@@ -30,6 +32,8 @@ paths:
           description: error while creation
   /item/{id}/users:
     get:
+      security:
+        - bearerAuth: []
       summary: get users with access to the item
       responses:
         '200':
@@ -42,8 +46,55 @@ paths:
                   type: string
         '400': 
           description: error
+  /item/{id}/comments:
+    get:
+      security:
+        - bearerAuth: []
+      summary: get all comments on item
+      responses:
+        '200':
+          description: secceded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    created:
+                      type: string
+                    text:
+                      type: string
+        '400':
+          description: general error
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      security:
+        - bearerAuth: []
+      summary: add a comment on item
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              text:
+                type: boolean
+      responses:
+        '200':
+          description: succeded
+        '400':
+          description: general error
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /item/access/{id}:
     post:
+      security:
+        - bearerAuth: []
       summary: change the authorized users who can access the item
       parameters:
         - in: path
@@ -63,6 +114,8 @@ paths:
           description: error while changing access
   /item/dir/{id}:
     get:
+      security:
+        - bearerAuth: []
       summary: Return all items in the directory specified
       responses:
         '200':
@@ -73,6 +126,8 @@ paths:
                 type: array
   /item/file/upload:
     post:
+      security:
+        - bearerAuth: []
       summary: Upload multiple files to directory
       parameters:
         - in: path
@@ -95,9 +150,11 @@ paths:
         '200':
           description: Upload secceded
         '400': 
-          description: error while creation
+          $ref: '#/components/responses/UnauthorizedError'
   /item/folder/upload:
     post:
+      security:
+        - bearerAuth: []
       summary: Upload a folder in specified folder
       parameters:
         - in: path
@@ -123,6 +180,8 @@ paths:
           description: error while creation
   /user:
     get:
+      security:
+        - bearerAuth: []
       summary: return user by token.
       responses:
         '200':
@@ -131,8 +190,12 @@ paths:
             application/json:
               schema: 
                 type: object
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
   /user/login:
     post:
+      security:
+        - bearerAuth: []
       summary: login to the website
       parameters:
         - in: path
@@ -158,7 +221,7 @@ paths:
                   user:
                     type: object
         '401':
-          description: invalid username or password
+          $ref: '#/components/responses/UnauthorizedError'
   /user/signin:
     post:
       summary: signin to the website
@@ -190,7 +253,7 @@ paths:
                   user:
                     type: object
         '401':
-          description: error creating user
+          $ref: '#/components/responses/UnauthorizedError'
   /user/all:
     get:
       summary: return all users.
@@ -211,6 +274,8 @@ paths:
                         type: string
   /user/update:
     post:
+      security:
+        - bearerAuth: []
       summary: update user's data
       parameters:
         - in: path
@@ -222,9 +287,11 @@ paths:
         '200':
           description: succeded
         '401':
-          description: authorization error
+          $ref: '#/components/responses/UnauthorizedError'
   /user/update/password:
     post:
+      security:
+        - bearerAuth: []
       summary: update user's password
       parameters:
         - in: path
@@ -241,9 +308,11 @@ paths:
         '200':
           description: succeded
         '401':
-          description: authorization error
+          $ref: '#/components/responses/UnauthorizedError'
   /user/update/image:
     post:
+      security:
+        - bearerAuth: []
       summary: update user's image
       parameters:
         - in: path
@@ -255,7 +324,7 @@ paths:
         '200':
           description: succeded
         '401':
-          description: authorization error
+          $ref: '#/components/responses/UnauthorizedError'
   /user/username/{id}:
     get:
       summary: return username by id.
@@ -269,3 +338,19 @@ paths:
                 properties:
                   username:
                     type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        Access-Token:
+          schema:
+            type: string
+security:
+  - bearerAuth: []
