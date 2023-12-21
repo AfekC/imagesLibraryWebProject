@@ -1,19 +1,17 @@
+import mongoose from "mongoose";
 
-module.exports = (sequelize, Sequelize) => {
-  const Item = sequelize.define("item", {
+const itemSchema =  new mongoose.Schema({
     name: {
-      type: Sequelize.STRING
+      type: String
     },
     size: {
-      type: Sequelize.BIGINT
+      type: Number
     },
     creator: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-      }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     }
-  });
-  return Item;
-};
+});
+
+module.exports = mongoose.model('Item', itemSchema);

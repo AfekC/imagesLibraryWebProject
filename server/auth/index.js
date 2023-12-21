@@ -2,11 +2,10 @@ import njwt from 'njwt';
 import { getUserById } from '../controllers/user.controller.js';
 
 
-const { APP_SECRET } = process.env;
 
 // decode jwt token
 const decodeToken = (token) => {
-    return njwt.verify(token, APP_SECRET).setExpiration(-1).body;
+    return njwt.verify(token, process.env.SESSION_SECRET).setExpiration(-1).body;
 }
 
 export const authMiddleware = async (req, res, next) => {

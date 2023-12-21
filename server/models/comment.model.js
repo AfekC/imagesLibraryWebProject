@@ -1,24 +1,19 @@
-import Item from './item.model';
+import mongoose from "mongoose";
 
-module.exports = (sequelize, Sequelize) => {
-  const Comment = sequelize.define("comment", {
-    userId: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: 'users',
-        key: 'id'
-    }
-    },
-    text: {
-      type: Sequelize.STRING
-    },
-    itemId: {
-      type: Sequelize.INTEGER,
-      references: {
-        model: 'items',
-        key: 'id'
-    }
-    }
-  });
-  return Comment;
-};
+const CommentSchema =  new mongoose.Schema({
+  text: {
+    type: String
+  },
+  item: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Item',
+    required: true,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  }
+});
+  
+module.exports = mongoose.model('Comment', CommentSchema);
