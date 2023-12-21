@@ -5,8 +5,11 @@ import bodyParser from 'body-parser';
 import userRoutes from './routes/user.route';
 import itemRoutes from './routes/item.route';
 
-export default new Promise((resolve, reject) => {
-  const mongoose = require("mongoose");
+const mongoose = require("mongoose");
+
+require("dotenv").config();
+
+export default new Promise(async (resolve, reject) => {
   mongoose.connect(process.env.DATABASE_URL);
   const db = mongoose.connection;
   db.on('error', (err) => console.error(err));

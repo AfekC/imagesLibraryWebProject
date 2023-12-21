@@ -28,7 +28,7 @@ const addUser = async (user) => {
 }
 
 export const getUserById = async (id) => {
-  return User.find({ id });
+  return (await User.findById(id))._doc;
 }
 
 const getUserByUsername = async (username) => {
@@ -85,7 +85,7 @@ export const updatePassword = async (req, res) => {
               if (result) {
                   const r = await new Promise((resolve, reject) => {
                     bcrypt.hash(newPassword, conf.saltRounds, function (err, hash) {
-                      User.findOneAndUpdate({ id: req.userId }, { password: hash }, resolve);
+                      User.findOneAndUpdate({ '_id': req.userId }, { password: hash }).then(resolve).catch(reject);
                     });
                   });
                   return res.json({ message: "changed successfuly" });
@@ -107,17 +107,16 @@ export const updatePassword = async (req, res) => {
 export const updateUser = async (req, res) => {
   if (!!req.userId) {
       try {
-        const { dataValues: user} = await getUserById(req.userId);
+        const user = await getUserById(req.userId);
+        console.log(user)
         await asyncForEach(Object.keys(user), (key) => {
             if (req.body.user[key]) {
                 user[key] = req.body.user[key];
             }
         })
-        const { id, firstname, lastname, username } = user;
-        User.findOneAndUpdate({ id }, { firstname, lastname, username }, (err, doc) => {
-            if (err) return res.send(500, {error: err});
-            return res.json({ message: 'saved successfuly' });      
-        });
+        const { _id, firstname, lastname, username } = user;
+        const a = await User.findOneAndUpdate({ '_id': _id }, { firstname, lastname, username });
+        return res.json({ message: 'saved successfuly' });      
       } catch (e) {
           res.status(400);
           console.log(e)
@@ -132,10 +131,8 @@ export const updateUser = async (req, res) => {
 export const updateImage = async (req, res) => {
   if (!!req.userId) {
       try {
-          User.findOneAndUpdate({ id: req.userId }, { image: req.file }, (err, doc) => {
-            if (err) return res.send(500, {error: err});
-            return res.json({ message: 'saved successfuly' });      
-        });
+        await User.findOneAndUpdate({ '_id': req.userId }, { image: req.file });
+        return res.json({ message: 'saved successfuly' });      
       } catch (e) {
           res.status(400);
           console.log(e);
