@@ -108,7 +108,6 @@ export const updateUser = async (req, res) => {
   if (!!req.userId) {
       try {
         const user = await getUserById(req.userId);
-        console.log(user)
         await asyncForEach(Object.keys(user), (key) => {
             if (req.body.user[key]) {
                 user[key] = req.body.user[key];

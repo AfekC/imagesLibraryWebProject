@@ -81,3 +81,20 @@ describe("POST /user/update", () => {
   });
 });
 
+describe("POST /user/update/password", () => {
+  test("update password", async () => {
+    let res = await request(app).post("/user/update/password").set({
+      accessToken: token,
+    }).send({
+      oldPassword: "Aa123456",
+      newPassword: "test",
+    });
+    expect(res.status).toEqual(200);
+    res = await request(app).post("/user/login").send({
+      username: "test2",
+      password: "test",
+    });
+    expect(res.status).toEqual(200);
+    token = res.body.accessToken;
+  });
+});
