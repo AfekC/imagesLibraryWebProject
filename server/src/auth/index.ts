@@ -1,6 +1,5 @@
 import njwt from 'njwt';
-import { getUserById } from '../controllers/user.controller.js';
-
+import { getUserById } from '../controllers/user.controller';
 
 
 // decode jwt token
@@ -14,11 +13,10 @@ export const authMiddleware = async (req, res, next) => {
       if (!token) {
           return next();
       }
-      const decoded = decodeToken(token);
-      const { userId } = decoded;
+      const userId = decodeToken(token).toJSON()['userId'].toString();
       const user = await getUserById(userId)
       if (user) {
-          req.userId = userId;
+          req.body.userId = userId;
       }
   } catch (e) {
       console.log(e);

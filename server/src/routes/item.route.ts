@@ -1,4 +1,4 @@
-import {} from '../controllers/item.controller.js';
+// import {} from '../controllers/item.controller.js';
 import * as express from 'express';
 const router = express.Router()
 
@@ -10,4 +10,4 @@ const router = express.Router()
 // router.post('/:id/comments', addComment);
 // router.post('/file/upload', addItem);
 
-module.exports = router
+export default router

@@ -1,8 +1,10 @@
-const { User } = require("../models");
-const bcrypt = require('bcrypt');
-const conf = require("../conf/conf.json");
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import User from "../models/user.model";
+import UserInterface from '../interfaces/user'
+import bcrypt from 'bcrypt';
 import { asyncForEach } from "../helpers";
 import njwt from 'njwt';
+import { Response, Request } from "express";
 
 // create jwt token
 const encodeToken = (tokenData) => {
@@ -12,14 +14,12 @@ const encodeToken = (tokenData) => {
 const returnInvalidCredentials = (res) => {
     res.status(401);
     return res.json({ error: 'Invalid username or password' });
-
 }
 
-const addUser = async (user) => {
+const addUser = async (user: UserInterface) : Promise<UserInterface> => {
   const { firstname, lastname, username, image, password } = user;
-
-  const promise = new Promise((resolve, reject) => {
-      bcrypt.hash(password, conf.saltRounds, async function (err, hash) {
+  const promise = new Promise<UserInterface>((resolve) => {
+    bcrypt.hash(password, Number(process.env.SALT_ROUNDS), async function (err, hash) {
           const user = await new User({ firstname, lastname, username, image, password: hash }).save();
           resolve(user);
       });
@@ -27,17 +27,17 @@ const addUser = async (user) => {
   return promise;
 }
 
-export const getUserById = async (id) => {
-  return (await User.findById(id))._doc;
+export const getUserById = async (id: string) : Promise<UserInterface>=> {
+  return await User.findById(id);
 }
 
-const getUserByUsername = async (username) => {
+const getUserByUsername = async (username: string): Promise<UserInterface> => {
   return User.findOne({ username });
 }
 
-export const getUserByToken = async (req, res) => {
-  if (!!req.userId) {
-      const user = await getUserById(req.userId);
+export const getUserByToken = async (req: Request, res: Response) => {
+  if (req.body.userId) {
+      const user = await getUserById(req.body.userId);
       return res.json({ user })
   } else {
       res.status(401);
@@ -45,7 +45,7 @@ export const getUserByToken = async (req, res) => {
   }
 }
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
 
   const user = await getUserByUsername(username)
@@ -64,7 +64,7 @@ export const login = async (req, res) => {
   });
 }
 
-export const signin = async (req, res) => {
+export const signin = async (req: Request, res: Response) => {
   const user = await addUser(req.body);
 
   if (!user) {
@@ -76,16 +76,16 @@ export const signin = async (req, res) => {
   return res.json({ accessToken, user });
 }
 
-export const updatePassword = async (req, res) => {
+export const updatePassword = async (req: Request, res: Response) => {
   const { oldPassword, newPassword } = req.body;
-  if (!!req.userId) {
+  if (req.body.userId) {
       try {
-          const user = await getUserById(req.userId);
+          const user = await getUserById(req.body.userId);
           bcrypt.compare(oldPassword, user.password, async (err, result) => {
               if (result) {
-                  const r = await new Promise((resolve, reject) => {
-                    bcrypt.hash(newPassword, conf.saltRounds, function (err, hash) {
-                      User.findOneAndUpdate({ '_id': req.userId }, { password: hash }).then(resolve).catch(reject);
+                  await new Promise((resolve, reject) => {
+                    bcrypt.hash(newPassword, Number(process.env.SALT_ROUNDS), function (err, hash) {
+                      User.findOneAndUpdate({ '_id': req.body.userId }, { password: hash }).then(resolve).catch(reject);
                     });
                   });
                   return res.json({ message: "changed successfuly" });
@@ -104,17 +104,16 @@ export const updatePassword = async (req, res) => {
   }
 }
 
-export const updateUser = async (req, res) => {
-  if (!!req.userId) {
+export const updateUser = async (req: Request, res: Response) => {
+  if (req.body.userId) {
       try {
-        const user = await getUserById(req.userId);
-        await asyncForEach(Object.keys(user), (key) => {
-            if (req.body.user[key]) {
-                user[key] = req.body.user[key];
-            }
-        })
-        const { _id, firstname, lastname, username } = user;
-        const a = await User.findOneAndUpdate({ '_id': _id }, { firstname, lastname, username });
+        const user = await getUserById(req.body.userId);
+        await User.findOneAndUpdate({ '_id': user._id }, 
+        { 
+          firstname: req.body.user.firstname || user.firstname as any, 
+          lastname: req.body.user.lastname || user.lastname as any,
+          username: req.body.user.username || user.username as any,
+        });
         return res.json({ message: 'saved successfuly' });      
       } catch (e) {
           res.status(400);
@@ -127,10 +126,10 @@ export const updateUser = async (req, res) => {
   }
 }
 
-export const updateImage = async (req, res) => {
-  if (!!req.userId) {
+export const updateImage = async (req: Request, res: Response) => {
+  if (req.body.userId) {
       try {
-        await User.findOneAndUpdate({ '_id': req.userId }, { image: req.file });
+        await User.findOneAndUpdate({ '_id': req.body.userId }, { image: req.body.file });
         return res.json({ message: 'saved successfuly' });      
       } catch (e) {
           res.status(400);

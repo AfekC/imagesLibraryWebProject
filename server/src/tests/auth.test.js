@@ -1,16 +1,19 @@
-const request = require('supertest');
-const mongoose = require('mongoose');
-require("dotenv").config();
-import appPromise from '../app';
+/* eslint-disable no-undef */
+import request from 'supertest';
+import mongoose from 'mongoose';
+import initApp from '../app';
+import dotenv from 'dotenv';
+import User from '../models/user.model';
 
-import { User } from '../models';
+dotenv.config();
+
 
 let token = '';
 let app;
 
 
 beforeAll(async () => {
-  app = await appPromise;
+  app = await initApp();
   await User.deleteMany();
 });
 
@@ -21,10 +24,10 @@ afterAll(async () => {
 describe("POST /user/signin", () => {
   test("signin test", async () => {
     const res = await request(app).post("/user/signin").send({
-      "firstname": "test",
-      "lastname": "test",
-      "username": "test",
-      "password": "Aa123456"
+      firstname: "test",
+      lastname: "test",
+      username: "test",
+      password: "Aa123456"
   });
     token = res.body.accessToken;
     expect(res.status).toEqual(200);

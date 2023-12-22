@@ -1,4 +1,4 @@
-import { login, signin, getUserByToken, updatePassword, updateUser, updateImage } from '../controllers/user.controller.js';
+import { login, signin, getUserByToken, updatePassword, updateUser, updateImage } from '../controllers/user.controller';
 import * as express from 'express';
 import multer from "multer";
 const router = express.Router();
@@ -24,4 +24,4 @@ router.post('/update', updateUser);
 router.post('/update/password', updatePassword);
 router.post('/update/image', upload.single("image"), updateImage);
 
-module.exports = router;
+export default router;

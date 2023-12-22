@@ -1,1 +1,0 @@
-docker run --name db -p 5432:5432 -e POSTGRESQL_PORT=5432 -e POSTGRESQL_DB=posgres -e POSTGRESQL_USER=postgres -e POSTGRES_PASSWORD=123 -d postgres
