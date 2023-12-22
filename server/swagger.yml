@@ -1,0 +1,290 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+  version: 0.1.9
+
+tags:
+   - name: image
+     description: all image routes
+   - name: user
+     description: all user routes
+paths:
+  /image:
+    get:
+      tags:
+        - image
+      summary: get all images ids
+      responses:
+        '200':
+          description: secceded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: integer
+        '400': 
+          description: error while download
+        '500':
+          description: error while accessing image
+  /image/{id}:
+    get:
+      tags:
+        - image
+      security:
+        - bearerAuth: []
+      summary: get image to preview
+      responses:
+        '200':
+          description: secceded
+        '400': 
+          description: error while download
+        '500':
+          description: error while accessing image
+    delete:
+      tags:
+        - image
+      security:
+        - bearerAuth: []
+      summary: delete an image
+      responses:
+        '200':
+          description: delete secceded
+        '400': 
+          description: error while deleting
+  /image/{id}/comments:
+    get:
+      tags:
+        - image
+      security:
+        - bearerAuth: []
+      summary: get all comments on image
+      responses:
+        '200':
+          description: secceded
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    username:
+                      type: string
+                    created:
+                      type: string
+                    text:
+                      type: string
+        '400':
+          description: general error
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      tags:
+        - image
+      security:
+        - bearerAuth: []
+      summary: add a comment on image
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              text:
+                type: boolean
+      responses:
+        '200':
+          description: succeded
+        '400':
+          description: general error
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /image/upload:
+    post:
+      tags:
+        - image
+      security:
+        - bearerAuth: []
+      summary: Upload image
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              files:
+                type: array
+              parentimage:
+                type: string
+              isPublic:
+                type: boolean
+              creator:
+                type: string
+              usersToShare:
+                type: array
+      responses:
+        '200':
+          description: Upload secceded
+        '400': 
+          $ref: '#/components/responses/UnauthorizedError'
+  /user:
+    get:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: return user by token.
+      responses:
+        '200':
+          description: returns a user
+          content:
+            application/json:
+              schema: 
+                type: object
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/login:
+    post:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: login to the website
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              username: 
+                type: string
+              password:
+                type: string
+      responses:
+        '200':
+          description: login successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  accessToken: 
+                    type: string
+                  user:
+                    type: object
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/signin:
+    post:
+      tags:
+        - user
+      summary: signin to the website
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              userName:
+                type: string
+              password:
+                type: string
+      responses:
+        '200':
+          description: signin successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  accessToken: 
+                    type: string
+                  user:
+                    type: object
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/update:
+    post:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: update user's data
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+      responses:
+        '200':
+          description: succeded
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/update/password:
+    post:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: update user's password
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              oldPassword:
+                type: string
+              newPassword:
+                type: string
+      responses:
+        '200':
+          description: succeded
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /user/update/image:
+    post:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: update user's image
+      parameters:
+        - in: path
+          required: true
+          name: file
+          schema:
+            type: object
+      responses:
+        '200':
+          description: succeded
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    UnauthorizedError:
+      description: Authentication information is missing or invalid
+      headers:
+        Access-Token:
+          schema:
+            type: string
+security:
+  - bearerAuth: []
