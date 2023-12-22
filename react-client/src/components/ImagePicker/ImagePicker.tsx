@@ -7,18 +7,11 @@ interface ImageFilePickerProps {
 }
 
 export const ImageFilePicker: React.FC<ImageFilePickerProps> = ({ onFileSelect }) => {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
-    if (file && file.type.startsWith('image/')) {
-      setSelectedFile(file);
-      if (onFileSelect) {
+    if (file && file.type.startsWith('image/') && onFileSelect) {
         onFileSelect(file);
-      }
-    } else {
-      setSelectedFile(null);
     }
   };
 
@@ -40,16 +33,6 @@ export const ImageFilePicker: React.FC<ImageFilePickerProps> = ({ onFileSelect }
           Upload Image
         </Button>
       </label>
-      {selectedFile && (
-        <div>
-          <p>Selected Image: {selectedFile.name}</p>
-          <img
-            src={URL.createObjectURL(selectedFile)}
-            alt="Selected"
-            style={{ maxWidth: '100%', maxHeight: '200px' }}
-          />
-        </div>
-      )}
     </div>
   );
 };
