@@ -1,15 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import User from "../models/user.model";
+import UserToken from "../models/userToken.model";
 import UserInterface from '../interfaces/user'
 import bcrypt from 'bcrypt';
-import { asyncForEach } from "../helpers";
-import njwt from 'njwt';
-import { Response, Request } from "express";
+import jwt from "jsonwebtoken";
+import { Response } from "express";
+import Request from "../interfaces/request"
+import { generateToken, verifyRefreshToken } from '../auth';
 
-// create jwt token
-const encodeToken = (tokenData) => {
-    return njwt.create(tokenData, process.env.SESSION_SECRET).compact();
-}
 
 const returnInvalidCredentials = (res) => {
     res.status(401);
@@ -36,14 +34,39 @@ const getUserByUsername = async (username: string): Promise<UserInterface> => {
 }
 
 export const getUserByToken = async (req: Request, res: Response) => {
-  if (req.body.userId) {
-      const user = await getUserById(req.body.userId);
+  if (req.userId) {
+      const user = await getUserById(req.userId);
       return res.json({ user })
   } else {
       res.status(401);
       return res.json({ error: 'User not authenticated' });
   }
 }
+
+export const refreshToken = async (req: Request, res: Response) => {
+  verifyRefreshToken(req.header('refreshToken'))
+        .then(({ tokenDetails }) => {
+            const payload = { userId: tokenDetails.userId };
+            const accessToken = jwt.sign(
+                payload,
+                process.env.SESSION_SECRET,
+                { expiresIn: "14m" }
+            );
+            res.status(200).json({
+                error: false,
+                accessToken,
+                message: "Access token created successfully",
+            });
+        })
+        .catch((err) => {
+          res.status(400).json(err)}
+        );
+};
+
+export const logout = async (req: Request, res: Response) =>{
+  await UserToken.deleteOne({ token: req.header('refreshToken') });
+  res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
+};
 
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -54,10 +77,10 @@ export const login = async (req: Request, res: Response) => {
       return;
   }
 
-  bcrypt.compare(password, user.password, (err, result) => {
+  bcrypt.compare(password, user.password, async (err, result) => {
       if (result) {
-          const accessToken = encodeToken({ userId: user.id });
-          return res.json({ accessToken, user });
+        const { accessToken, refreshToken } = await generateToken(user);
+        return res.json({ accessToken, refreshToken, user });
       } else {
           return returnInvalidCredentials(res);
       }
@@ -72,20 +95,20 @@ export const signin = async (req: Request, res: Response) => {
       return;
   }
 
-  const accessToken = encodeToken({ userId: user.id });
-  return res.json({ accessToken, user });
+  const { accessToken, refreshToken } = await generateToken(user);
+  return res.json({ accessToken, refreshToken, user });
 }
 
 export const updatePassword = async (req: Request, res: Response) => {
   const { oldPassword, newPassword } = req.body;
-  if (req.body.userId) {
+  if (req.userId) {
       try {
-          const user = await getUserById(req.body.userId);
+          const user = await getUserById(req.userId);
           bcrypt.compare(oldPassword, user.password, async (err, result) => {
               if (result) {
                   await new Promise((resolve, reject) => {
                     bcrypt.hash(newPassword, Number(process.env.SALT_ROUNDS), function (err, hash) {
-                      User.findOneAndUpdate({ '_id': req.body.userId }, { password: hash }).then(resolve).catch(reject);
+                      User.findOneAndUpdate({ '_id': req.userId }, { password: hash }).then(resolve).catch(reject);
                     });
                   });
                   return res.json({ message: "changed successfuly" });
@@ -105,9 +128,9 @@ export const updatePassword = async (req: Request, res: Response) => {
 }
 
 export const updateUser = async (req: Request, res: Response) => {
-  if (req.body.userId) {
+  if (req.userId) {
       try {
-        const user = await getUserById(req.body.userId);
+        const user = await getUserById(req.userId);
         await User.findOneAndUpdate({ '_id': user._id }, 
         { 
           firstname: req.body.user.firstname || user.firstname as any, 
@@ -127,9 +150,9 @@ export const updateUser = async (req: Request, res: Response) => {
 }
 
 export const updateImage = async (req: Request, res: Response) => {
-  if (req.body.userId) {
+  if (req.userId) {
       try {
-        await User.findOneAndUpdate({ '_id': req.body.userId }, { image: req.body.file });
+        await User.findOneAndUpdate({ '_id': req.userId }, { image: req.body.file });
         return res.json({ message: 'saved successfuly' });      
       } catch (e) {
           res.status(400);

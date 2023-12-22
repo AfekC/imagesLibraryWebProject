@@ -147,7 +147,22 @@ paths:
                 type: object
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /user/login:
+  /user/logout:
+    post:
+      tags:
+        - user
+      security:
+        - bearerAuth: []
+      summary: logout
+      parameters:
+        - in: path
+          required: true
+      responses:
+        '200':
+          description: loged out successfully
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    /user/login:
     post:
       tags:
         - user

@@ -1,4 +1,4 @@
-import { login, signin, getUserByToken, updatePassword, updateUser, updateImage } from '../controllers/user.controller';
+import { refreshToken, logout, login, signin, getUserByToken, updatePassword, updateUser, updateImage } from '../controllers/user.controller';
 import * as express from 'express';
 import multer from "multer";
 const router = express.Router();
@@ -18,6 +18,8 @@ const upload = multer({
 
 
 router.get('/', getUserByToken);
+router.post('/refreshtoken', refreshToken);
+router.post('/logout', logout);
 router.post('/login', login);
 router.post('/signin', signin);
 router.post('/update', updateUser);
