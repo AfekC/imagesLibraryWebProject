@@ -2,7 +2,7 @@ import swagger from './swagger';
 import { authMiddleware } from './auth';
 import bodyParser from 'body-parser';
 import userRoutes from './routes/user.route';
-import itemRoutes from './routes/item.route';
+import imageRoutes from './routes/image.route';
 import mongoose from "mongoose";
 import express, { Express } from 'express';
 import cors from 'cors';
@@ -30,7 +30,7 @@ export default () => {
       
       //server main routs
       app.use('/user', userRoutes);
-      app.use('/item', itemRoutes);
+      app.use('/image', imageRoutes);
 
       swagger.initSwagger(app);
       resolve(app);

@@ -14,7 +14,7 @@ paths:
     get:
       tags:
         - image
-      summary: get all images ids
+      summary: get images data (name, size, creator)
       responses:
         '200':
           description: secceded
@@ -23,7 +23,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: integer
+                  type: object
         '400': 
           description: error while download
         '500':
@@ -32,8 +32,6 @@ paths:
     get:
       tags:
         - image
-      security:
-        - bearerAuth: []
       summary: get image to preview
       responses:
         '200':
@@ -57,8 +55,6 @@ paths:
     get:
       tags:
         - image
-      security:
-        - bearerAuth: []
       summary: get all comments on image
       responses:
         '200':
@@ -116,16 +112,10 @@ paths:
           schema:
             type: object
             properties:
-              files:
-                type: array
-              parentimage:
+              name:
                 type: string
-              isPublic:
-                type: boolean
-              creator:
-                type: string
-              usersToShare:
-                type: array
+              file:
+                type: object
       responses:
         '200':
           description: Upload secceded
@@ -154,20 +144,15 @@ paths:
       security:
         - bearerAuth: []
       summary: logout
-      parameters:
-        - in: path
-          required: true
       responses:
         '200':
           description: loged out successfully
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-    /user/login:
+  /user/login:
     post:
       tags:
         - user
-      security:
-        - bearerAuth: []
       summary: login to the website
       parameters:
         - in: path

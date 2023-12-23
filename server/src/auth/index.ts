@@ -4,7 +4,7 @@ import { getUserById } from '../controllers/user.controller';
 import Request from "../interfaces/request"
 import { Response, NextFunction } from "express";
 import UserToken from "../models/userToken.model";
-import UserInstance from "../interfaces/user";
+import IUser from "../interfaces/user";
 
 
 // decode jwt token
@@ -33,7 +33,7 @@ export const authMiddleware = async (req: Request, res:Response, next: NextFunct
 
 
 // create jwt token
-export const generateToken = async (user: UserInstance): Promise<any> => {
+export const generateToken = async (user: IUser): Promise<any> => {
     const payload = { userId: user._id };
     const accessToken =jwt.sign(payload, process.env.SESSION_SECRET, { expiresIn: '1d' });
     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_PRIVATE_KEY, { expiresIn: '100d' });

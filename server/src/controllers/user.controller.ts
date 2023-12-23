@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import User from "../models/user.model";
 import UserToken from "../models/userToken.model";
-import UserInterface from '../interfaces/user'
+import IUser from '../interfaces/user'
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import { Response } from "express";
@@ -14,9 +14,9 @@ const returnInvalidCredentials = (res) => {
     return res.json({ error: 'Invalid username or password' });
 }
 
-const addUser = async (user: UserInterface) : Promise<UserInterface> => {
+const addUser = async (user: IUser) : Promise<IUser> => {
   const { firstname, lastname, username, image, password } = user;
-  const promise = new Promise<UserInterface>((resolve) => {
+  const promise = new Promise<IUser>((resolve) => {
     bcrypt.hash(password, Number(process.env.SALT_ROUNDS), async function (err, hash) {
           const user = await new User({ firstname, lastname, username, image, password: hash }).save();
           resolve(user);
@@ -25,11 +25,11 @@ const addUser = async (user: UserInterface) : Promise<UserInterface> => {
   return promise;
 }
 
-export const getUserById = async (id: string) : Promise<UserInterface>=> {
+export const getUserById = async (id: string) : Promise<IUser>=> {
   return await User.findById(id);
 }
 
-const getUserByUsername = async (username: string): Promise<UserInterface> => {
+const getUserByUsername = async (username: string): Promise<IUser> => {
   return User.findOne({ username });
 }
 

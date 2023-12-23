@@ -1,5 +1,5 @@
 import { Request } from "express";
 
-export default interface CustomRequest extends Request{
+export default interface ICustomRequest extends Request{
   userId: string,
 }
