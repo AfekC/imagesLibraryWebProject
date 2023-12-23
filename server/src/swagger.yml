@@ -119,7 +119,30 @@ paths:
       responses:
         '200':
           description: Upload secceded
-        '400': 
+        '401': 
+          $ref: '#/components/responses/UnauthorizedError'
+  /image/{id}/update:
+    post:
+      tags:
+        - image
+      security:
+        - bearerAuth: []
+      summary: update the image
+      parameters:
+        - in: path
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              file:
+                type: object
+      responses:
+        '200':
+          description: update secceded
+        '401': 
           $ref: '#/components/responses/UnauthorizedError'
   /user:
     get:

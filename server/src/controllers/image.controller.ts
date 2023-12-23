@@ -63,3 +63,21 @@ export const addImage = async (req: Request, res: Response) => {
     return res.json({ error: 'User not authenticated' });
   }
 };
+
+export const updateImage = async (req: Request, res: Response) => {
+  if (req.userId) {
+    const { name, file } = req.body;
+    const image = await Image.findByIdAndUpdate(req.params.id, { name, size: file.size, });
+    if (image.creator.toString() !== req.userId) {
+      res.status(401);
+    }
+    if (!image) {
+      return res.status(400).json({ error: 'image not found' });
+    } else {
+      return res.json(image);
+    }
+  } else {
+    res.status(401);
+    return res.json({ error: 'User not authenticated' });
+  }
+};

@@ -35,7 +35,6 @@ describe("POST /user/signin", () => {
       password: "Aa123456"
   });
     cookie = res.get('Set-Cookie');
-    console.log(cookie)
     expect(res.status).toEqual(200);
     expect(res.body.user.firstname).toEqual("test");
     expect(res.body.user.lastname).toEqual("test");
@@ -146,9 +145,19 @@ describe("upload image", () => {
     });
     expect(res.status).toEqual(200);
 
+    res = await request(app).post(`/image/${imageId}/update`).set('Cookie', [...cookie]).send({
+      name: 'new name',
+      file: {}
+    });
+    expect(res.status).toEqual(200);
+
     res = await request(app).get(`/image/${imageId}/comments`).set('Cookie', [...cookie]).send();
     expect(res.status).toEqual(200);
     expect(res.body.comments[0].text).toEqual('great picture');
+
+    res = await request(app).get("/image/").set('Cookie', [...cookie]).send();
+    expect(res.status).toEqual(200);
+    expect(res.body[0].name).toEqual('new name');
   });
 });
 
@@ -156,7 +165,7 @@ describe("delete image", () => {
   test("delete the posted image", async () => {
     let res = await request(app).get("/image/").set('Cookie', [...cookie]).send();
     expect(res.status).toEqual(200);
-    expect(res.body[0].name).toEqual('myImage');
+    expect(res.body[0].name).toEqual('new name');
 
     res = await request(app).delete("/image/" + res.body[0]._id).set('Cookie', [...cookie]).send();
     expect(res.status).toEqual(200);
