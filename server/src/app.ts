@@ -22,10 +22,10 @@ export default () => {
     db.on('error', (err) => console.error(err));
     mongoose.connect(process.env.DATABASE_URL).then(() => {
       const app = express();
+      app.use(cookieParser());
       app.use(cors());
       app.use(bodyParser.json());
       app.use(authMiddleware);
-      app.use(cookieParser());
       app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
       
       //server main routs

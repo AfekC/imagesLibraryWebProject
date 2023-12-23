@@ -14,7 +14,7 @@ const decodeToken = (token) => {
 
 export const authMiddleware = async (req: Request, res:Response, next: NextFunction) => {
   try {
-      const token = req.header('accessToken');
+      const token = req.cookies ? req.cookies['accessToken'] : null;
       if (!token) {
           return next();
       }

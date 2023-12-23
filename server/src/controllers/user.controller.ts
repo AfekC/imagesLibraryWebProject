@@ -44,7 +44,7 @@ export const getUserByToken = async (req: Request, res: Response) => {
 }
 
 export const refreshToken = async (req: Request, res: Response) => {
-  verifyRefreshToken(req.header('refreshToken'))
+  verifyRefreshToken(req.cookies['refreshToken'])
         .then(({ tokenDetails }) => {
             const payload = { userId: tokenDetails.userId };
             const accessToken = jwt.sign(
@@ -52,9 +52,8 @@ export const refreshToken = async (req: Request, res: Response) => {
                 process.env.SESSION_SECRET,
                 { expiresIn: "14m" }
             );
-            res.status(200).json({
+            res.status(200).cookie('accessToken', accessToken, { expires: new Date(Date.now() + 3600000) }).json({
                 error: false,
-                accessToken,
                 message: "Access token created successfully",
             });
         })
@@ -64,8 +63,11 @@ export const refreshToken = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) =>{
-  await UserToken.deleteOne({ token: req.header('refreshToken') });
-  res.status(200).json({ error: false, message: "Logged Out Sucessfully" });
+  await UserToken.deleteOne({ token: req.cookies['refreshToken'] });
+  res
+  .clearCookie('accessToken')
+  .clearCookie('refreshToken')
+  .json({ error: false, message: "Logged Out Sucessfully" });
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -80,7 +82,10 @@ export const login = async (req: Request, res: Response) => {
   bcrypt.compare(password, user.password, async (err, result) => {
       if (result) {
         const { accessToken, refreshToken } = await generateToken(user);
-        return res.json({ accessToken, refreshToken, user });
+        return res
+        .cookie('accessToken', accessToken, { expires: new Date(Date.now() + 3600000) })
+        .cookie('refreshToken', refreshToken, { expires: new Date(Date.now() + 3600000 * 24 * 100) })
+        .json({ user });
       } else {
           return returnInvalidCredentials(res);
       }
@@ -96,7 +101,10 @@ export const signin = async (req: Request, res: Response) => {
   }
 
   const { accessToken, refreshToken } = await generateToken(user);
-  return res.json({ accessToken, refreshToken, user });
+  return res
+    .cookie('accessToken', accessToken, { expires: new Date(Date.now() + 3600000) })
+    .cookie('refreshToken', refreshToken, { expires: new Date(Date.now() + 3600000 * 24 * 100)})
+    .json({ user });
 }
 
 export const updatePassword = async (req: Request, res: Response) => {
