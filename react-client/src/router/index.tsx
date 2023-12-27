@@ -1,12 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
-import { BaseCard } from "../components/BaseCard/BaseCard";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Login } from "../components/Login/login";
 import { Profile } from "../components/Profile/profile";
 
 export const router = createBrowserRouter([
     {
         path: "*",
-        element: <BaseCard/>,
+        element: <Navigate to='/login' />,
     },
     {
         path: "/login",

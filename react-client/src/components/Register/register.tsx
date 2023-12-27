@@ -8,7 +8,6 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { registerProps } from '../../types';
-import { AxiosResponse } from 'axios';
 import {useDispatch} from "react-redux";
 import { updateCurrentUser } from '../../store/user/userReducer';
 import { registerUser } from '../../services'
@@ -91,8 +90,8 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
         });
         if(isValid) {
             try {
-                const { data: user} : AxiosResponse<User> = await registerUser(formData);
-                dispatch(updateCurrentUser(user));
+                await registerUser(formData);
+                dispatch(updateCurrentUser(formData));
                 handleClose();
             } catch(error) {
                 console.error("cannot register", error);

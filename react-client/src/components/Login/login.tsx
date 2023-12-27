@@ -39,8 +39,8 @@ export const Login = () => {
         console.log('Username:', username);
         console.log('Password:', password);
         try {
-            const { data: user} : AxiosResponse<User> = await loginUser({ username, password });
-            dispatch(updateCurrentUser(user));
+            await loginUser({ username, password });
+            dispatch(updateCurrentUser({ username, password }));
         } catch(error) {
             console.error("failed to login user", error);
         }

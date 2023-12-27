@@ -8,8 +8,24 @@ import {
 } from "react-router-dom";
 import { Header } from './components/Header/header'
 import { router } from "./router";
+import { useEffect  } from 'react';
+import { useDispatch } from 'react-redux';
+import { getUser } from './services';
+import { updateCurrentUser } from './store/user/userReducer';
+import { AxiosResponse } from 'axios';
+import { User } from './types';
 
 function App() {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getUser().then((user: AxiosResponse<User, any>) => {
+      dispatch(updateCurrentUser(user.data));
+    });
+    return () => {};
+  }, []);
+
   return (
     <div className="App">
       <Header/>
