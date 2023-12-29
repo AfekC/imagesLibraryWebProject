@@ -5,5 +5,5 @@ export interface User {
     password: string;
     token?: string;
     email?: string;
-    profileImage?: String;
+    image?: File;
 }

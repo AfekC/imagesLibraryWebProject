@@ -5,13 +5,15 @@ import {
 import { BaseMenuProps } from '../../types';
 import {useDispatch} from "react-redux";
 import { logOutCurrentUser } from '../../store/user/userReducer';
+import { logout } from '../../services';
 
 export const BaseMenu = ({ parentElement, isOpen, sx }: BaseMenuProps) => {
   
     const dispatch = useDispatch();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         dispatch(logOutCurrentUser());
+        await logout();
     };
 
     const handleViewProfile = () => {
