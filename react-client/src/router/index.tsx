@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { Login } from "../components/Login/login";
 import { Profile } from "../components/Profile/profile";
+import { ImageLibraryDisplay } from '../components/ImageLibraryDisplay/imageLibraryDIsplay'
+import { ImageDisplay } from '../components/ImageDisplay/ImageDisplay';
 
 export const router = createBrowserRouter([
     {
@@ -14,5 +16,13 @@ export const router = createBrowserRouter([
     {
         path: "/profile",
         element: <Profile/>,
+    },
+    {
+        path: "/library",
+        element: <ImageLibraryDisplay />,
+    },
+    {
+        path: "/image/:username",
+        element: <ImageDisplay />
     }
 ]);

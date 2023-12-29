@@ -22,14 +22,12 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
         lastName: '',
         username: '',
         password: '',
-        email: '',
     });
 
     const [errorData, setErrorData] = useState<User>({
         firstName: '',
         lastName: '',
         password: '',
-        email: '',
         username: '',
     });
 
@@ -65,10 +63,6 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
             break;
         case 'password':
             message = value.length < 8 ? 'הסיסמה חייבת להכיל לפחות 8 אותיות' : '';
-            break;
-        case 'email':
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            message = emailRegex.test(value) ? '' : 'אימייל לא תקין';
             break;
         default:
             message = '';
@@ -157,19 +151,6 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
             onChange={handleChange}
             error={!!errorData['password']}
             helperText={errorData['password']}
-            margin="normal"
-            />
-
-            <TextField
-            fullWidth
-            label="אימייל"
-            variant="outlined"
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            error={!!errorData['email']}
-            helperText={errorData['email']}
             margin="normal"
             />
 

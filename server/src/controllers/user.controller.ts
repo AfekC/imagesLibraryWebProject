@@ -29,8 +29,14 @@ export const getUserById = async (id: string) : Promise<IUser>=> {
   return await User.findById(id);
 }
 
-const getUserByUsername = async (username: string): Promise<IUser> => {
+export const getUserByUsername = async (username: string): Promise<IUser> => {
   return User.findOne({ username });
+}
+
+export const getUserByUsernameTo = async (username: string): Promise<IUser> => {
+    const user: IUser = await User.findOne({ username });
+    delete user.password;
+    return user;
 }
 
 export const getUserByToken = async (req: Request, res: Response) => {

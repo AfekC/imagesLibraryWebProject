@@ -5,9 +5,7 @@ import { loginUser } from '../../services'
 import {useDispatch} from "react-redux";
 import { updateCurrentUser } from '../../store/user/userReducer';
 import { useNavigate } from "react-router-dom";
-import { User } from '../../types/User';
 import { Register } from '../Register/register';
-import { AxiosResponse } from 'axios';
 
 export const Login = () => {
     const [username, setUsername] = useState('');
@@ -15,32 +13,24 @@ export const Login = () => {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
+
     useEffect(() => {
         const cachedUsername = localStorage.getItem('username');
         const cachedPassword = localStorage.getItem('password');
         if (cachedUsername && cachedPassword) {
             setUsername(cachedUsername);
             setPassword(cachedPassword);
-            handleLogin().then(() => {
-                console.log("connected");
-                navigate("/home");
-            }).catch(() => {
-                console.error('cannot connect');
-            });
+            handleLogin(cachedUsername, cachedPassword);
         }
         return () => {
-            setPassword('');
-            setUsername('');
         }
       }, []);
 
-    const handleLogin = async () => {
-        console.log('Username:', username);
-        console.log('Password:', password);
+    const handleLogin = async (username: string, password: string) => {
         try {
             await loginUser({ username, password });
             dispatch(updateCurrentUser({ username, password }));
+            navigate('/library');
         } catch(error) {
             console.error("failed to login user", error);
         }
@@ -55,7 +45,7 @@ export const Login = () => {
         <BaseCard title="התחברות">
             <Grid container justifyContent="center" height="100%" width="100%">
             { open? <Register onExit={() => setOpen(false)} isOpen={open} /> : null}
-                    <Paper elevation={3} sx={{ padding: '2rem', textAlign: 'center', width: "50%", height: "40%", marginTop: "10%" }}>
+                    <Paper elevation={3} sx={{ padding: '2rem', textAlign: 'center', width: "50%", height: "70%", marginTop: "5%" }}>
                         <Typography variant="h5" gutterBottom>
                             התחברות
                         </Typography>
@@ -65,6 +55,7 @@ export const Login = () => {
                             fullWidth
                             margin="normal"
                             value={username}
+                            rows={6}
                             onChange={(event) => handleInputChange(event, setUsername)}
                         />
                         <TextField
@@ -74,9 +65,10 @@ export const Login = () => {
                             fullWidth
                             margin="normal"
                             value={password}
+                            rows={6}
                             onChange={(event) => handleInputChange(event, setPassword)}
                         />
-                        <Button color="success" onClick={handleLogin}>
+                        <Button color="success" sx={{ height: '10%', width: '60%'}} onClick={() => handleLogin}>
                             Login
                         </Button>
 

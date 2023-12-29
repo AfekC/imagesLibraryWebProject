@@ -8,3 +8,4 @@ export const logout = async (): Promise<AxiosResponse<void, any>> => axiosClient
 export const updateUser = async (user: User): Promise<AxiosResponse<void, any>> => axiosClient.post('/user/update');
 export const getUser = async (): Promise<AxiosResponse<User, any>> => axiosClient.get('/user/');
 export const uploadProfileImage = async (file: { file: File }): Promise<AxiosResponse<void, any>> => axiosClient.post('/user/update/image', { file });
+export const getUserByUsername = async (userId: string): Promise<AxiosResponse<User, any>> => axiosClient.post('/user/byUsername', userId);

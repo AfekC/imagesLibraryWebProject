@@ -24,7 +24,8 @@ export const Header = () => {
     const getUser = useSelector((state: { user: { user: User}}) => state.user.user);
 
     const getFormattedMessage = () => {
-        return getUser.firstName? `>שלום ${getUser.firstName}` : 'שלום אורח';
+        console.log(getUser, "getUser")
+        return getUser.username? "שלום" + `  ${getUser.username}` : 'שלום אורח';
     }
 
     return (
@@ -46,7 +47,7 @@ export const Header = () => {
                 <IconButton color="inherit" onClick={handleMenuOpen} sx={{ width: '8vw'}}>
                     <AccountCircleIcon />
                     <BaseMenu sx={{ marginRight: '2vw', width: '10vw'}} isOpen={menuData.isOpen} parentElement={menuData.parentElement}/>
-                    <span>{getFormattedMessage()}</span>
+                    <span style={{ fontSize: '1vw'}}>{getFormattedMessage()}</span>
                 </IconButton>
             </Toolbar>
         </AppBar>
