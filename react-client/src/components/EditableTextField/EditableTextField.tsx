@@ -15,14 +15,14 @@ export const EditableTextField = ({ value, onChange, label, name }: EditableText
 
   if (isEdit) {
     return (
-      <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end' }}>
+      <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end', height: '20%' }}>
       <TextField
         label={label}
         variant="outlined"
         name={name}
         value={value}
         onChange={handleInputChange}
-        sx={{ width: '70%', marginBottom: '10%' }}
+        sx={{ width: '70%', marginBottom: '1%' }}
         onKeyDown={(e) => {
           if (e.key === "Enter")
             setIsEdit(false);
@@ -34,7 +34,7 @@ export const EditableTextField = ({ value, onChange, label, name }: EditableText
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end' }}>
+    <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end', height: '10%' }}>
       <div style={{ paddingBottom: '10%'}}>
         <UserEditIcon onClick={() => setIsEdit(!isEdit)} />
       </div>

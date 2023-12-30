@@ -1,7 +1,7 @@
 import { useState, useEffect  } from 'react';
 import { TextField, Button, Paper, Typography, Grid, Link } from '@mui/material';
 import { BaseCard } from '../BaseCard/BaseCard';
-import { loginUser } from '../../services'
+import { loginUser, getUser } from '../../services'
 import {useDispatch} from "react-redux";
 import { updateCurrentUser } from '../../store/user/userReducer';
 import { useNavigate } from "react-router-dom";
@@ -68,7 +68,7 @@ export const Login = () => {
                             rows={6}
                             onChange={(event) => handleInputChange(event, setPassword)}
                         />
-                        <Button color="success" sx={{ height: '10%', width: '60%'}} onClick={() => handleLogin}>
+                        <Button color="success" sx={{ height: '10%', width: '60%'}} onClick={() => handleLogin(username, password)}>
                             Login
                         </Button>
 

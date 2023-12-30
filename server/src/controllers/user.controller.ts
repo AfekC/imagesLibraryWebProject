@@ -34,7 +34,7 @@ export const getUserByUsername = async (username: string): Promise<IUser> => {
 }
 
 export const getUserByUsernameTo = async (username: string): Promise<IUser> => {
-    const user: IUser = await User.findOne({ username });
+    const user: IUser = await getUserByUsername(username);
     delete user.password;
     return user;
 }
@@ -76,7 +76,7 @@ export const logout = async (req: Request, res: Response) =>{
   .json({ error: false, message: "Logged Out Sucessfully" });
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response)  => {
   const { username, password } = req.body;
 
   const user = await getUserByUsername(username)

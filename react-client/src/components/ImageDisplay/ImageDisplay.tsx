@@ -2,30 +2,19 @@ import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {Comment, DisplayedImage, User} from "../../types";
-import { getUserByUsername } from "../../services";
-import { styled } from '@mui/material/styles';
+import { DisplayedImage, User} from "../../types";
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { useLocation, Location } from "react-router-dom";
 import { BaseCard } from "../BaseCard/BaseCard";
-import {ImageFilePicker} from "../ImagePicker/ImagePicker";
 import Divider from "@mui/material/Divider";
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
 
 export const ImageDisplay = () => {
 
     const location: Location<{ image: DisplayedImage}>  = useLocation();
     const [ users, setUsers ] = useState<Record<string, User>>({});
     const getImage = ()=> location.state.image;
-
+    console.log(getImage());
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -62,27 +51,30 @@ export const ImageDisplay = () => {
                     width: '50%',
                     padding: '0',
                     marginLeft: '25%',
-                    textAlign: 'center',
                     overflowY: 'auto'
                 }}
             >
                 {getImage().comments?.map((comment, index) => (
-                    <div key={index} style={{  width: '100%' }}>
-                        <section style={{ width: '40vw' }}>
-                            <Avatar
-                                alt={users[comment.userId]?.username}
-                                src={users[comment.userId]?.image ? URL.createObjectURL(users[comment.userId].image as File) : ''}
-                            >
-                                {users[comment.userId]?.image ? null : <AccountCircleIcon/>}
-                            </Avatar>
-                        </section>
-                        <section style={{ width: '40vw' }}>
-                            <Typography variant="body2">
-                                <strong>{users[comment.userId]?.username} dsda</strong>
-                                <strong>{comment.comment}  sd</strong>
-                            </Typography>
-                        </section>
-                        <Divider />
+                    <div key={comment.userId}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={1}>
+                                <Avatar
+                                    alt={users[comment.userId]?.username}
+                                    src={
+                                        users[comment.userId]?.image ? users[comment.userId].image : ''
+                                    }
+                                >
+                                    {users[comment.userId]?.image ? null : <AccountCircleIcon />}
+                                </Avatar>
+                            </Grid>
+                            <Grid item xs={2} sx={{ textAlign:'left', marginTop: '1%', fontSize: '1vw' }}>
+                                <strong>shai</strong>{users[comment.userId]?.username}
+                            </Grid>
+                            <Grid item xs={8} sx={{ textAlign:'right', marginTop: '1%', fontSize: '1vw' }}>
+                                <strong>{comment.comment}</strong>
+                            </Grid>
+                        </Grid>
+                        <Divider/>
                     </div>
                 ))}
             </Paper>

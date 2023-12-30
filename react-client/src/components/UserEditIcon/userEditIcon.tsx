@@ -4,7 +4,7 @@ import { IconButton } from '@mui/material';
 export const UserEditIcon = ({ onClick }: { onClick?: Function}) => {
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '10%', height: '10%' }}>
             <IconButton
                 onClick={(event) => onClick? onClick(event) : null}
                 style={{

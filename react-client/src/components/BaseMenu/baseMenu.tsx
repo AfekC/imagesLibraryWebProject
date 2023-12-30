@@ -6,19 +6,21 @@ import { BaseMenuProps } from '../../types';
 import {useDispatch} from "react-redux";
 import { logOutCurrentUser } from '../../store/user/userReducer';
 import { logout } from '../../services';
+import { useNavigate } from "react-router-dom";
 
 export const BaseMenu = ({ parentElement, isOpen, sx }: BaseMenuProps) => {
   
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleLogout = async () => {
         dispatch(logOutCurrentUser());
         await logout();
+        navigate('/');
     };
 
     const handleViewProfile = () => {
-        // Implement your view profile logic here
-        // For example, navigate to the user's profile page
+        navigate('/profile');
     };
 
   return (

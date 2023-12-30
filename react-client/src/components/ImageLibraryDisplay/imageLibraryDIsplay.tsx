@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { BaseCard } from "../BaseCard/BaseCard";
 
 export const ImageLibraryDisplay = () => {
-    // @ts-ignore
+
     const [ images, setImages ] = useState<DisplayedImage[]>([]);
     const navigate = useNavigate();
 
@@ -20,15 +20,15 @@ export const ImageLibraryDisplay = () => {
             try {
                 const response = await getAll();
                 setImages(response.data);
+                const comments= [1,2,3,4,5,6,7,8,9,10,11,12,13].map((number) => ({ userId: `shai${number}`, comment: 'good', createdAt: new Date() }));
                 setImages([{
                     imageRef: require('../../petel.jpeg'),
                     name: 'shai',
                     creator: { username: 'shai' },
                     size: 100,
                     createdAt: new Date(),
-                    comments: [{ userId: 'shai', comment: 'good', createdAt: new Date() }],
+                    comments,
                 }])
-                console.log("done");
             } catch (error) {
                 console.error('Error fetching users:', error);
             }

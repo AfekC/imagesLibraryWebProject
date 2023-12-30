@@ -15,7 +15,6 @@ export const Profile = () => {
     return state.user.user as User;
   });
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  setSelectedFile(getUser.image as File);
   const [currentUserDetails, setCurrentUserDetails] = useState<User>({...getUser}); 
   const handleUserChanges = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -40,31 +39,62 @@ export const Profile = () => {
 
 
   return (
-    <BaseCard title="פרופיל">
-      <Grid container justifyContent="center" height="90%" width="70%" marginLeft="15%" marginRight="15%" marginTop="7vh">
-        <Grid container justifyContent="center" height="10%">
-          {selectedFile ? (
-            <img
-              loading='lazy'
-              src={URL.createObjectURL(selectedFile)}
-              alt="Selected"
-              style={{ maxWidth: '100%', maxHeight: '200px' }}
-            />
-          ) : (
-            <AccountCircleIcon style={{ fontSize: '10vw' }} />
-          )}
-          <ImageFilePicker onFileSelect={(file) => updateUserImage(file)}/>
-        </Grid>
-        <Paper elevation={3} sx={{ padding: '2rem', textAlign: 'center', width: "50%", height: "60%" }}>
-          <EditableTextField name="firstName" label="שם פרטי" value={currentUserDetails.firstName} onChange={handleUserChanges} />
-          <EditableTextField  name="lastName"label="שם משפחה" value={currentUserDetails.lastName} onChange={handleUserChanges} />
-          <EditableTextField name="username" label="שם משתמש" value={currentUserDetails.username} onChange={handleUserChanges} />
-          <Button color="success" fullWidth sx={{ marginBottom: '3vh'}} onClick={updateUserDetails}>
-             Login
-           </Button>
-          <Link>שנה סיסמה</Link>
-        </Paper>
-      </Grid>
-    </BaseCard>
+      <BaseCard title="פרופיל">
+          <Grid
+              container
+              justifyContent="center"
+              height="90%"
+              width="70%"
+              marginLeft="15%"
+              marginRight="15%"
+              marginTop="-4vh"
+          >
+              <Grid container direction="column" justifyContent="center" alignItems="center" height="50%">
+                  {selectedFile || getUser.image ? (
+                      <img
+                          loading="lazy"
+                          src={
+                              selectedFile
+                                  ? URL.createObjectURL(selectedFile)
+                                  : getUser.image
+                                      ? getUser.image
+                                      : ''
+                          }
+                          alt="Selected"
+                          style={{ maxWidth: '100%', maxHeight: '100%', zIndex: 121212 }}
+                      />
+                  ) : (
+                      <AccountCircleIcon style={{ fontSize: '10vw' }} />
+                  )}
+                  <ImageFilePicker onFileSelect={(file) => updateUserImage(file)} />
+              </Grid>
+              <Paper sx={{ padding: '2rem', textAlign: 'center', fontSize: '0.8vw', width: '50%', height: '50%', zIndex: 1121, overflowY: 'auto' }}>
+                 <div>
+                     <EditableTextField
+                         name="firstName"
+                         label="שם פרטי"
+                         value={currentUserDetails.firstName || ''}
+                         onChange={handleUserChanges}
+                     />
+                     <EditableTextField
+                         name="lastName"
+                         label="שם משפחה"
+                         value={currentUserDetails.lastName || ''}
+                         onChange={handleUserChanges}
+                     />
+                     <EditableTextField
+                         name="username"
+                         label="שם משתמש"
+                         value={currentUserDetails.username}
+                         onChange={handleUserChanges}
+                     />
+                     <Button color="success" fullWidth sx={{ fontSize: '0.8vw'}} onClick={updateUserDetails}>
+                         Login
+                     </Button>
+                     <Link>שנה סיסמה</Link>
+                 </div>
+              </Paper>
+          </Grid>
+      </BaseCard>
   );
 };
