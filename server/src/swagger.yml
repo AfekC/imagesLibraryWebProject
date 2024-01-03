@@ -214,9 +214,9 @@ paths:
           schema:
             type: object
             properties:
-              firstName:
+              firstname:
                 type: string
-              lastName:
+              lastname:
                 type: string
               userName:
                 type: string

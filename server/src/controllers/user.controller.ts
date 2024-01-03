@@ -7,6 +7,8 @@ import jwt from "jsonwebtoken";
 import { Response } from "express";
 import Request from "../interfaces/request"
 import { generateToken, verifyRefreshToken } from '../auth';
+import { writeFile, deleteFile } from '../helpers';
+import fs from 'fs';
 
 
 const returnInvalidCredentials = (res) => {
@@ -25,6 +27,17 @@ const addUser = async (user: IUser) : Promise<IUser> => {
   return promise;
 }
 
+const getUserImageAsBase64 = (path: string): string => {
+  if (path) {
+    if (!fs.existsSync(path)) {
+      console.warn("path does not exists");
+      return "";
+    } 
+    return fs.readFileSync(path, "base64");
+  }
+  return "";
+}
+
 export const getUserById = async (id: string) : Promise<IUser>=> {
   return await User.findById(id);
 }
@@ -36,12 +49,14 @@ export const getUserByUsername = async (username: string): Promise<IUser> => {
 export const getUserByUsernameTo = async (username: string): Promise<IUser> => {
     const user: IUser = await getUserByUsername(username);
     delete user.password;
+    user.image = getUserImageAsBase64(user.image);
     return user;
 }
 
 export const getUserByToken = async (req: Request, res: Response) => {
   if (req.userId) {
       const user = await getUserById(req.userId);
+      user.image = getUserImageAsBase64(user.image);
       return res.json({ user })
   } else {
       res.status(401);
@@ -166,7 +181,10 @@ export const updateUser = async (req: Request, res: Response) => {
 export const updateImage = async (req: Request, res: Response) => {
   if (req.userId) {
       try {
-        await User.findOneAndUpdate({ '_id': req.userId }, { image: req.body.file });
+        const { image } = await User.findById(req.params.id);
+        deleteFile(image);        
+        const path = writeFile(req.body.file, req.userId.toString(), process.env.baseProfilePath);
+        await User.findOneAndUpdate({ '_id': req.userId }, { image: path });
         return res.json({ message: 'saved successfuly' });      
       } catch (e) {
           res.status(400);

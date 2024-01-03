@@ -1,6 +1,7 @@
 import { Response } from "express"
 import Request from '../interfaces/request'
 import Image from '../models/image.model';
+import { writeFile, deleteFile } from '../helpers';
 
 export const getAllData = async (req: Request, res: Response) => {
   const data = await Image.find().select('name creator size');
@@ -8,13 +9,17 @@ export const getAllData = async (req: Request, res: Response) => {
 };
 
 export const getImage = async (req: Request, res: Response) => {
-  res.json({ message: 'not implemented' });
+  const image = await Image.findById(req.params.id);
+  res.download(image.imageRef, image.name, (err) => {
+    if(err) console.error(err);
+  });
 };
 
 export const deleteById = async (req: Request, res: Response) => {
   if (req.userId) {
     const imageId = req.params.id;
     const deletedImage = await Image.findOneAndDelete({ _id: imageId, creator: req.userId });
+    deleteFile(deletedImage.imageRef);
     if (!deletedImage) {
       res.status(400);
       return res.json({ error: 'User dosnt have image with this Id' });
@@ -57,7 +62,8 @@ export const addComment = async (req: Request, res: Response) => {
 export const addImage = async (req: Request, res: Response) => {
   if (req.userId) {
     const { name, file } = req.body;
-    return res.json((await new Image({ name, size: file.size, creator: req.userId, comments: [] }).save()));
+    const path = writeFile(file, name, process.env.baseLibraryPath);
+    return res.json((await new Image({ name, creator: req.userId, comments: [], imageRef: path }).save()));
   } else {
     res.status(401);
     return res.json({ error: 'User not authenticated' });
@@ -67,7 +73,10 @@ export const addImage = async (req: Request, res: Response) => {
 export const updateImage = async (req: Request, res: Response) => {
   if (req.userId) {
     const { name, file } = req.body;
-    const image = await Image.findByIdAndUpdate(req.params.id, { name, size: file.size, });
+    const { imageRef } = await Image.findById(req.params.id);
+    deleteFile(imageRef);
+    const path = writeFile(file, name, process.env.baseLibraryPath);
+    const image = await Image.findByIdAndUpdate(req.params.id, { name, size: file.size, imageRef: path});
     if (image.creator.toString() !== req.userId) {
       res.status(401);
     }

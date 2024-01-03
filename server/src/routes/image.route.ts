@@ -1,7 +1,7 @@
 import { getAllData, getImage, deleteById, getImageComments, addComment, addImage, updateImage } from '../controllers/image.controller';
 import * as express from 'express';
-const router = express.Router()
 
+const router = express.Router()
 
 router.get('/', getAllData);
 router.get('/:id', getImage);

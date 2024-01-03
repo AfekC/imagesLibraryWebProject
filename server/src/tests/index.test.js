@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import User from '../models/user.model';
 import UserToken from '../models/userToken.model';
 import Image from '../models/image.model';
+import fs from "fs";
 
 dotenv.config();
 
@@ -133,9 +134,12 @@ describe("GET /image", () => {
 
 describe("upload image", () => {
   test("post image and comments", async () => {
-    let res = await request(app).post("/image/upload").set('Cookie', [...cookie]).send({
+    const file = fs.readFileSync(process.env.baseLibraryPath + 'node.png', "utf8");
+    let res = await request(app).post("/image/upload")
+    .set('Cookie', [...cookie])
+    .send({
       name: 'myImage',
-      file: {}
+      file
     });
     expect(res.status).toEqual(200);
     const imageId = res.body._id;
@@ -147,7 +151,7 @@ describe("upload image", () => {
 
     res = await request(app).post(`/image/${imageId}/update`).set('Cookie', [...cookie]).send({
       name: 'new name',
-      file: {}
+      file
     });
     expect(res.status).toEqual(200);
 

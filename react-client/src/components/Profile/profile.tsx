@@ -71,15 +71,15 @@ export const Profile = () => {
               <Paper sx={{ padding: '2rem', textAlign: 'center', fontSize: '0.8vw', width: '50%', height: '50%', zIndex: 1121, overflowY: 'auto' }}>
                  <div>
                      <EditableTextField
-                         name="firstName"
+                         name="firstname"
                          label="שם פרטי"
-                         value={currentUserDetails.firstName || ''}
+                         value={currentUserDetails.firstname || ''}
                          onChange={handleUserChanges}
                      />
                      <EditableTextField
-                         name="lastName"
+                         name="lastname"
                          label="שם משפחה"
-                         value={currentUserDetails.lastName || ''}
+                         value={currentUserDetails.lastname || ''}
                          onChange={handleUserChanges}
                      />
                      <EditableTextField

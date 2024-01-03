@@ -58,7 +58,7 @@ export const ImageLibraryDisplay = () => {
                             </div>
                             <div>
                                 <Typography>
-                                    {image.createdAt.toDateString()}
+                                    {image.createdAt ? image.createdAt.toDateString() : 'field not found'}
                                 </Typography>
                             </div>
                         </ListItem>

@@ -18,15 +18,15 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
     const dispatch = useDispatch();
 
     const [formData, setFormData] = useState<User>({
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         username: '',
         password: '',
     });
 
     const [errorData, setErrorData] = useState<User>({
-        firstName: '',
-        lastName: '',
+        firstname: '',
+        lastname: '',
         password: '',
         username: '',
     });
@@ -52,10 +52,10 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
   const validateField = (name: string, value: string): {isValid: Boolean;message: String;} => {
     let message = '';
     switch (name) {
-        case 'firstName':
+        case 'firstname':
             message = value.trim() === '' || value.trim().length < 4  ? 'השם צריך להיות מעל 4 תווים' : '';
             break;
-        case 'lastName':
+        case 'lastname':
             message = value.trim() === '' || value.trim().length < 4  ? 'השם צריך להיות מעל 4 תווים' : '';
             break;
         case 'username':
@@ -109,11 +109,11 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
             fullWidth
             label="שם פרטי"
             variant="outlined"
-            name="firstName"
-            value={formData.firstName}
+            name="firstname"
+            value={formData.firstname}
             onChange={handleChange}
-            error={!!errorData['firstName']}
-            helperText={errorData['firstName']}
+            error={!!errorData['firstname']}
+            helperText={errorData['firstname']}
             margin="normal"
             />
 
@@ -121,11 +121,11 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
             fullWidth
             label="שם משפחה"
             variant="outlined"
-            name="lastName"
-            value={formData.lastName}
+            name="lastname"
+            value={formData.lastname}
             onChange={handleChange}
-            error={!!errorData['lastName']}
-            helperText={errorData['lastName']}
+            error={!!errorData['lastname']}
+            helperText={errorData['lastname']}
             margin="normal"
             />
 
