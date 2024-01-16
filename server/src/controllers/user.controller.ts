@@ -93,7 +93,7 @@ export const logout = async (req: Request, res: Response) =>{
 
 export const login = async (req: Request, res: Response)  => {
   const { username, password } = req.body;
-
+  console.log("Login");
   const user = await getUserByUsername(username)
   if (!user) {
       returnInvalidCredentials(res)
@@ -179,6 +179,7 @@ export const updateUser = async (req: Request, res: Response) => {
 }
 
 export const updateImage = async (req: Request, res: Response) => {
+    console.log(req.cookies);
   if (req.userId) {
       try {
         const { image } = await User.findById(req.params.id);

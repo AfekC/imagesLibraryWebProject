@@ -6,6 +6,8 @@ import {useDispatch} from "react-redux";
 import { updateCurrentUser } from '../../store/user/userReducer';
 import { useNavigate } from "react-router-dom";
 import { Register } from '../Register/register';
+import {User} from "../../types";
+import {AxiosResponse} from "axios";
 
 export const Login = () => {
     const [username, setUsername] = useState('');
@@ -15,21 +17,24 @@ export const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const cachedUsername = localStorage.getItem('username');
-        const cachedPassword = localStorage.getItem('password');
-        if (cachedUsername && cachedPassword) {
-            setUsername(cachedUsername);
-            setPassword(cachedPassword);
-            handleLogin(cachedUsername, cachedPassword);
-        }
         return () => {
+            const cachedUsername = localStorage.getItem('username');
+            const cachedPassword = localStorage.getItem('password');
+            if (cachedUsername && cachedPassword) {
+                setUsername(cachedUsername);
+                setPassword(cachedPassword);
+                handleLogin(cachedUsername, cachedPassword);
+            }
         }
       }, []);
 
+
     const handleLogin = async (username: string, password: string) => {
         try {
-            await loginUser({ username, password });
-            dispatch(updateCurrentUser({ username, password }));
+            const { data: user }: AxiosResponse<{ user: User}, any> = await loginUser({ username, password });
+            user.user.password = password;
+            dispatch(updateCurrentUser(user.user));
+            console.trace();
             navigate('/library');
         } catch(error) {
             console.error("failed to login user", error);

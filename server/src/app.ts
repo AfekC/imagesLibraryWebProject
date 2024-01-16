@@ -8,7 +8,7 @@ import express, { Express } from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv'; 
+import dotenv from 'dotenv';
 
 dotenv.config();
 
@@ -27,7 +27,6 @@ export default () => {
       app.use(bodyParser.json());
       app.use(authMiddleware);
       app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
-      
       //server main routs
       app.use('/user', userRoutes);
       app.use('/image', imageRoutes);

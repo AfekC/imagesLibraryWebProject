@@ -24,7 +24,6 @@ export const Header = () => {
     const getUser = useSelector((state: { user: { user: User}}) => state.user.user);
 
     const getFormattedMessage = () => {
-        console.log(getUser, "getUser")
         return getUser.username? "שלום" + `  ${getUser.username}` : 'שלום אורח';
     }
 

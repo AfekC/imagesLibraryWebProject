@@ -3,8 +3,9 @@ import TextField from '@mui/material/TextField';
 import { EditableTextFieldProps } from '../../types'
 import { UserEditIcon } from '../UserEditIcon/userEditIcon';
 
-export const EditableTextField = ({ value, onChange, label, name }: EditableTextFieldProps) => {
+export const EditableTextField = ({ value, onChange, onEnter, label, name }: EditableTextFieldProps) => {
 
+    console.log(value)
   const [isEdit, setIsEdit] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -24,8 +25,11 @@ export const EditableTextField = ({ value, onChange, label, name }: EditableText
         onChange={handleInputChange}
         sx={{ width: '70%', marginBottom: '1%' }}
         onKeyDown={(e) => {
-          if (e.key === "Enter")
-            setIsEdit(false);
+          if (e.key === "Enter") {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+              onEnter? onEnter(e) : null;
+              setIsEdit(false);
+          }
           }}
       />
       <span style={{ width: '20%', paddingBottom: '10%'}}>:{label}</span>

@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  client:
+    build: ./react-client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+      - server
+    volumes:
+      - ./var:/var/log/nginx/
+  server:
+    build: ./server
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: Aa123456
+    ports:
+      - "27017:27017"

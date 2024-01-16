@@ -2,19 +2,31 @@ import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { DisplayedImage, User} from "../../types";
+import { DisplayedImage, User } from "../../types";
+import {EditableTextField} from "../EditableTextField/EditableTextField";
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import { useLocation, Location } from "react-router-dom";
 import { BaseCard } from "../BaseCard/BaseCard";
 import Divider from "@mui/material/Divider";
+import { addComment } from '../../services';
 
 export const ImageDisplay = () => {
 
     const location: Location<{ image: DisplayedImage}>  = useLocation();
     const [ users, setUsers ] = useState<Record<string, User>>({});
+    const [currentMessage, setCurrentMessage] = useState<string>("");
     const getImage = ()=> location.state.image;
-    console.log(getImage());
+
+    const addMessage = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        getImage().comments = (await addComment(currentMessage)).data;
+    }
+
+    const updateMessage = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { value } = event.target;
+        setCurrentMessage(value);
+    }
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
@@ -77,6 +89,9 @@ export const ImageDisplay = () => {
                         <Divider/>
                     </div>
                 ))}
+                <div style={{ marginTop: "5%"}}>
+                    <EditableTextField value={currentMessage} onEnter={addComment} onChange={updateMessage} label="הודעה" name="message"/>
+                </div>
             </Paper>
         </BaseCard>
     );

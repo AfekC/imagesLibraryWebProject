@@ -27,8 +27,8 @@ export const Profile = () => {
     }
 
     const updateUserImage = async (file: File) => {
-      if(selectedFile !== null) {
-        await uploadProfileImage({ file });
+      if(selectedFile === null) {
+        await uploadProfileImage(file);
         setSelectedFile(file)
       }
     }

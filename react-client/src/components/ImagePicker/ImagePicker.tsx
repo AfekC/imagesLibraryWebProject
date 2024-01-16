@@ -9,8 +9,7 @@ interface ImageFilePickerProps {
 export const ImageFilePicker: React.FC<ImageFilePickerProps> = ({ onFileSelect }) => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
-    if (file && file.type.startsWith('image/') && onFileSelect) {
+    if (file && onFileSelect) {
         onFileSelect(file);
     }
   };
@@ -19,7 +18,7 @@ export const ImageFilePicker: React.FC<ImageFilePickerProps> = ({ onFileSelect }
     <div>
       <input
         type="file"
-        accept="image/*"
+        accept=".jpg, .jpeg, .png"
         style={{ display: 'none' }}
         id="fileInput"
         onChange={handleFileChange}
