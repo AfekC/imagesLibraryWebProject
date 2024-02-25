@@ -5,3 +5,9 @@ export interface BaseMenuProps {
     isOpen: boolean;
     sx?: SxProps<Theme>;
 }
+
+export interface MenuItem {
+    text: string;
+    isDisabled: boolean;
+    onClick: Function;
+}

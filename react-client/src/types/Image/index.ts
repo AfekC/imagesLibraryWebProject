@@ -1,16 +1,15 @@
-import {User} from "../User";
-
 export interface DisplayedImage {
+    _id: string;
     name: string;
     size: number;
-    creator: User;
+    creator: string;
     createdAt: Date;
     comments: Comment[];
     imageRef: string;
 }
 
 export interface Comment {
-    comment: string;
+    text: string;
     userId: string;
     createdAt: Date;
 }

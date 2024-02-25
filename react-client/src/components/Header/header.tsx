@@ -1,17 +1,30 @@
 import { AppBar, Toolbar, Typography, IconButton, Badge } from '@mui/material';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import { BaseMenu } from '../BaseMenu/baseMenu';
-import { BaseMenuProps, User } from '../../types';
-import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import {BaseMenuProps, Weather} from '../../types';
+import { useAuth } from "../../contexts/AuthContext";
+import {useEffect, useState} from 'react';
+import { getCurrentWeather } from "../../services/api/wetherApi";
 
 export const Header = () => {
 
+    const { user } = useAuth();
+    const [currentWeather, setCurrentWeather] = useState<NonNullable<Weather>>();
     const [menuData, setMenuData] = useState<BaseMenuProps>({
         isOpen: false
     });
+
+    useEffect(() => {
+        const initCurrentWeather = async () => {
+            const weather = await getCurrentWeather();
+            setCurrentWeather(weather);
+        }
+        initCurrentWeather();
+        return () => {
+        }
+    },[])
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         setMenuData((prevMenuData) => ({
@@ -21,11 +34,16 @@ export const Header = () => {
         }));
       };
 
-    const getUser = useSelector((state: { user: { user: User}}) => state.user.user);
-
     const getFormattedMessage = () => {
-        return getUser.username? "שלום" + `  ${getUser.username}` : 'שלום אורח';
+        if (user) {
+            return user.username? "שלום" + `  ${user.username}` : 'שלום אורח';
+        }
+        return '';
     }
+
+    const getWeatherIcon = (temp: number) => {
+        return temp < 20 ? <AcUnitIcon/> : <WbSunnyIcon/>;
+    };
 
     return (
         <AppBar position="sticky" sx={{ height: '25vh' }}>
@@ -33,21 +51,15 @@ export const Header = () => {
                 <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'left' }}>
                     ספריית תמונות
                 </Typography>
-                <IconButton color="inherit">
-                    <Badge badgeContent={4} color="error">
-                        <MailIcon />
-                    </Badge>
-                </IconButton>
-                <IconButton color="inherit">
-                    <Badge badgeContent={17} color="error">
-                        <NotificationsIcon />
-                    </Badge>
-                </IconButton>
                 <IconButton color="inherit" onClick={handleMenuOpen} sx={{ width: '8vw'}}>
-                    <AccountCircleIcon />
+                    { user && user.image? <img src={user.image} width="24px" height="24px"/> : <AccountCircleIcon />}
                     <BaseMenu sx={{ marginRight: '2vw', width: '10vw'}} isOpen={menuData.isOpen} parentElement={menuData.parentElement}/>
                     <span style={{ fontSize: '1vw'}}>{getFormattedMessage()}</span>
                 </IconButton>
+                <div>
+                    {currentWeather? getWeatherIcon(currentWeather.temperature) : ''}
+                    <p>{`Temperature: ${parseInt(currentWeather?.temperature?.toString() as string || '')}°C`}</p>
+                </div>
             </Toolbar>
         </AppBar>
     )

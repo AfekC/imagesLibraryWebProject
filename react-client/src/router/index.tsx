@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
         element: <ImageLibraryDisplay />,
     },
     {
-        path: "/image/:username",
+        path: "/image/:imageId",
         element: <ImageDisplay />
     }
 ]);

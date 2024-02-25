@@ -5,14 +5,11 @@ services:
     build: ./react-client
     ports:
       - "3000:3000"
-    depends_on:
-      - mongodb
-      - server
     volumes:
       - ./var:/var/log/nginx/
   server:
     build: ./server
-  mongodb:
+  mongo:
     image: mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo

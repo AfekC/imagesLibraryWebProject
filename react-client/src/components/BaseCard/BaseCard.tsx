@@ -1,11 +1,23 @@
 import { Paper, Typography,IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { BaseCardProps } from '../../types';
 import { Header } from '../Header/header';
+import { useAuth } from "../../contexts/AuthContext";
+import {useEffect} from "react";
 
 export const BaseCard = ({ children, title, overflow = false }: BaseCardProps) => {
+
     const navigate = useNavigate();
+    const location = useLocation();
+    const { isLogged } = useAuth();
+
+    useEffect(() => {
+        if (!isLogged) {
+            navigate('/login');
+        }
+    }, [location.pathname])
+
     const goBack = () => {
         navigate(-1);
     };

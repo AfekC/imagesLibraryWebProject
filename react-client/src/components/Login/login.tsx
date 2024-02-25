@@ -1,40 +1,29 @@
 import { useState, useEffect  } from 'react';
 import { TextField, Button, Paper, Typography, Grid, Link } from '@mui/material';
 import { BaseCard } from '../BaseCard/BaseCard';
-import { loginUser, getUser } from '../../services'
-import {useDispatch} from "react-redux";
-import { updateCurrentUser } from '../../store/user/userReducer';
 import { useNavigate } from "react-router-dom";
 import { Register } from '../Register/register';
-import {User} from "../../types";
-import {AxiosResponse} from "axios";
+import { useAuth } from "../../contexts/AuthContext";
+import { GoogleLogin } from '@react-oauth/google';
+import {GoogleCredentials, User} from "../../types";
+import './login.css';
 
 export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const { login, isLogged, googleLogin } = useAuth();
     const [open, setOpen] = useState(false);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     useEffect(() => {
-        return () => {
-            const cachedUsername = localStorage.getItem('username');
-            const cachedPassword = localStorage.getItem('password');
-            if (cachedUsername && cachedPassword) {
-                setUsername(cachedUsername);
-                setPassword(cachedPassword);
-                handleLogin(cachedUsername, cachedPassword);
-            }
+        if (isLogged) {
+            navigate('/library');
         }
-      }, []);
-
+    }, [isLogged])
 
     const handleLogin = async (username: string, password: string) => {
         try {
-            const { data: user }: AxiosResponse<{ user: User}, any> = await loginUser({ username, password });
-            user.user.password = password;
-            dispatch(updateCurrentUser(user.user));
-            console.trace();
+            login(username, password);
             navigate('/library');
         } catch(error) {
             console.error("failed to login user", error);
@@ -44,12 +33,16 @@ export const Login = () => {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
          setFunction: React.Dispatch<React.SetStateAction<string>>) => {
         setFunction(event.target.value)
+    };
+
+    const handleRegister = (user: User) => {
+        login(user.username, user.password as string);
     }
 
     return (
         <BaseCard title="התחברות">
             <Grid container justifyContent="center" height="100%" width="100%">
-            { open? <Register onExit={() => setOpen(false)} isOpen={open} /> : null}
+            { open? <Register onExit={() => setOpen(false)} onRegister={handleRegister} isOpen={open} /> : null}
                     <Paper elevation={3} sx={{ padding: '2rem', textAlign: 'center', width: "50%", height: "70%", marginTop: "5%" }}>
                         <Typography variant="h5" gutterBottom>
                             התחברות
@@ -73,8 +66,21 @@ export const Login = () => {
                             rows={6}
                             onChange={(event) => handleInputChange(event, setPassword)}
                         />
-                        <Button color="success" sx={{ height: '10%', width: '60%'}} onClick={() => handleLogin(username, password)}>
-                            Login
+
+                        <center style={{ width: "20vh" }}>
+                            <GoogleLogin
+                                width="20vw"
+                                onSuccess={googleLogin}
+                                onError={() => {console.log('Google login failed')}}
+                            />
+                        </center>
+
+                        <Button
+                            color="success"
+                            sx={{ height: '10%', width: '60%'}}
+                            onClick={() => handleLogin(username, password)}
+                        >
+                            התחבר
                         </Button>
 
                         <Typography 

@@ -1,9 +1,10 @@
-import mongoose from "mongoose"
+import IUser from "./user";
 
 export default interface IImage {
+  _id: string,
   name: string,
   size: number,
-  creator: mongoose.Schema.Types.ObjectId,
+  creator: IUser,
   comments: [
     {
       text: string,

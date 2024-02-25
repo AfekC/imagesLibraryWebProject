@@ -3,24 +3,25 @@ import {
   MenuItem
 } from '@mui/material';
 import { BaseMenuProps } from '../../types';
-import {useDispatch} from "react-redux";
-import { logOutCurrentUser } from '../../store/user/userReducer';
-import { logout } from '../../services';
+import { useAuth } from "../../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export const BaseMenu = ({ parentElement, isOpen, sx }: BaseMenuProps) => {
   
-    const dispatch = useDispatch();
+    const { logout, isLogged } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = async () => {
-        dispatch(logOutCurrentUser());
         await logout();
         navigate('/');
     };
 
     const handleViewProfile = () => {
         navigate('/profile');
+    };
+
+    const handleViewImages = () => {
+        navigate('/library');
     };
 
   return (
@@ -30,7 +31,7 @@ export const BaseMenu = ({ parentElement, isOpen, sx }: BaseMenuProps) => {
             PaperProps={{
                 style: {
                     width: '8vw',
-                    height: '10vh',
+                    height: '15vh',
                     textAlign: 'right'
                 },
                 elevation: 0,
@@ -62,8 +63,9 @@ export const BaseMenu = ({ parentElement, isOpen, sx }: BaseMenuProps) => {
               transformOrigin={{ horizontal: 'right', vertical: 'top' }}
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem onClick={handleViewProfile} sx={{justifyContent: "center"}}>פרופיל</MenuItem>
-            <MenuItem onClick={handleLogout} sx={{justifyContent: "center"}}>יציאה</MenuItem>
+            <MenuItem onClick={handleViewProfile} disabled={!isLogged} sx={{justifyContent: "center"}}>פרופיל</MenuItem>
+              <MenuItem onClick={handleViewImages} disabled={!isLogged} sx={{justifyContent: "center"}}>תמונות</MenuItem>
+            <MenuItem onClick={handleLogout} disabled={!isLogged} sx={{justifyContent: "center"}}>יציאה</MenuItem>
           </Menu>
   );
 };

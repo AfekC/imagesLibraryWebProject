@@ -8,28 +8,25 @@ import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import { registerProps } from '../../types';
-import {useDispatch} from "react-redux";
-import { updateCurrentUser } from '../../store/user/userReducer';
+import { useAuth } from "../../contexts/AuthContext";
 import { registerUser } from '../../services'
 import { User } from '../../types';
 
-export const Register = ({ onExit, isOpen }: registerProps) => {
-
-    const dispatch = useDispatch();
+export const Register = ({ onExit, isOpen, onRegister }: registerProps) => {
 
     const [formData, setFormData] = useState<User>({
         firstname: '',
         lastname: '',
         username: '',
         password: '',
-    });
+    } as User);
 
     const [errorData, setErrorData] = useState<User>({
         firstname: '',
         lastname: '',
         password: '',
         username: '',
-    });
+    } as User);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | { target: {name: string, value: string}}) => {
         const { name, value } = event.target;
@@ -85,8 +82,8 @@ export const Register = ({ onExit, isOpen }: registerProps) => {
         if(isValid) {
             try {
                 await registerUser(formData);
-                dispatch(updateCurrentUser(formData));
                 handleClose();
+                onRegister(formData);
             } catch(error) {
                 console.error("cannot register", error);
             }

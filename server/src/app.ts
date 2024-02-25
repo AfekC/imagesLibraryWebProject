@@ -9,8 +9,7 @@ import cors from 'cors';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import path from 'path';
-
+import fileUpload from 'express-fileupload';
 dotenv.config();
 
 export default () => {
@@ -27,10 +26,7 @@ export default () => {
       app.use(bodyParser.json());
       app.use(authMiddleware);
       app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
-
-      // Serve static files from the React build directory
-      app.use(express.static(path.join(__dirname, 'public')));
-
+      app.use(fileUpload());
       // Server main routes
       app.use('/user', userRoutes);
       app.use('/image', imageRoutes);

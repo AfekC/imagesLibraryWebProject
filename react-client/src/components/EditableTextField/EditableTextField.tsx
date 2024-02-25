@@ -3,27 +3,27 @@ import TextField from '@mui/material/TextField';
 import { EditableTextFieldProps } from '../../types'
 import { UserEditIcon } from '../UserEditIcon/userEditIcon';
 
-export const EditableTextField = ({ value, onChange, onEnter, label, name }: EditableTextFieldProps) => {
+export const EditableTextField = ({ value, onChange, onEnter, label, name, error, width, isPermanentEdit }: EditableTextFieldProps) => {
 
-    console.log(value)
-  const [isEdit, setIsEdit] = useState(false);
-
+    const [isEdit, setIsEdit] = useState(false);
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     if (onChange) {
       onChange(e);
     }
   };
 
-  if (isEdit) {
+  if (isEdit || isPermanentEdit) {
     return (
       <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end', height: '20%' }}>
       <TextField
         label={label}
         variant="outlined"
-        name={name}
+        name={name || ''}
         value={value}
+        error={!!error}
+        helperText={error}
         onChange={handleInputChange}
-        sx={{ width: '70%', marginBottom: '1%' }}
+        sx={{ width: width || '70%', marginBottom: '1%' }}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
               // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -38,17 +38,17 @@ export const EditableTextField = ({ value, onChange, onEnter, label, name }: Edi
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end', height: '10%' }}>
+    <div style={{ display: 'flex', alignItems: 'center',  justifyContent: 'flex-end', height: '10%', marginLeft: 'auto' }}>
       <div style={{ paddingBottom: '10%'}}>
         <UserEditIcon onClick={() => setIsEdit(!isEdit)} />
       </div>
-      <span style={{ width: '20%', paddingBottom: '10%', marginLeft: '40%'}}>
+      <span style={{ width: '60%', paddingBottom: '10%', marginLeft: '15%' }}>
           <b>{value}</b>
       </span>
-      <span style={{ width: '20%', paddingBottom: '10%', marginLeft: '0%'}}>
+      <span style={{ width: '20%', paddingBottom: '10%', marginLeft: '30%'}}>
           :{label}
       </span>
-
+        {<span style={{ width: '100%', textAlign: "center"}}>{ !!error? error: ''}</span>}
   </div>
   );
 };
