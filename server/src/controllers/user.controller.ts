@@ -2,7 +2,7 @@
 import User from "../models/user.model";
 import UserToken from "../models/userToken.model";
 import IUser from '../interfaces/user'
-import bcrypt, {hashSync} from 'bcrypt';
+import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import { Response } from "express";
 import Request from "../interfaces/request"

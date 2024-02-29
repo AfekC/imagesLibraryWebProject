@@ -3,7 +3,7 @@ import {GoogleUserData, User} from '../../types';
 import { AxiosResponse } from 'axios';
 
 export const loginUser = async (userDetails: User): Promise<AxiosResponse<User, any>> => axiosClient.post('/user/login', userDetails);
-export const registerUser = async (userDetails: User): Promise<AxiosResponse<void, any>> => axiosClient.post('/user/signin', userDetails);
+export const registerUser = async (userDetails: User): Promise<AxiosResponse<void, any>> => axiosClient.post('/user/signup', userDetails);
 export const logoutUser = async (): Promise<AxiosResponse<void, any>> => axiosClient.post('/user/logout');
 export const updateUser = async (user: User): Promise<AxiosResponse<void, any>> => axiosClient.post('/user/update', { user });
 export const getUser = async (): Promise<AxiosResponse<User, any>> => axiosClient.get('/user/');

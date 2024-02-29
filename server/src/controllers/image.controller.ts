@@ -47,8 +47,7 @@ export const deleteImages = async (req: Request, res: Response) => {
 }
 
 export const getImageComments = async (req: Request, res: Response) => {
-  const { _id } = req.body;
-  const { comments } = await Image.findById(_id);
+  const { comments } = await Image.findById(req.params.id);
   if (comments) {
     return res.json({ comments });
   } else {
