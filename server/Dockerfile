@@ -8,6 +8,7 @@ COPY .env ./.env
 COPY babel.config.js ./babel.config.js
 COPY src ./src
 COPY images ./images
+COPY certs ./certs
 
 # Install dependencies
 RUN npm install

@@ -21,10 +21,11 @@ export default () => {
     mongoose.connect(process.env.DATABASE_URL).then(() => {
       const app = express();
 
+      app.use(express.static('public'));
       app.use(cookieParser());
       app.use(cors());
       app.use(bodyParser.json());
-      app.use(authMiddleware);
+      app.use(authMiddleware);;
       app.use(session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true }));
       app.use(fileUpload());
       // Server main routes

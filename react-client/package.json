@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "react-scripts start --port 3001",
-    "build": "react-scripts build",
+    "build": "react-scripts ../server/public",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

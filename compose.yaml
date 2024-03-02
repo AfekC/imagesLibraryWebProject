@@ -4,7 +4,7 @@ services:
   client:
     build: ./react-client
     ports:
-      - "3000:3000"
+      - "443:443"
     volumes:
       - ./var:/var/log/nginx/
   server:
