@@ -5,10 +5,11 @@ info:
   version: 0.1.9
 
 tags:
-   - name: image
-     description: all image routes
-   - name: user
-     description: all user routes
+  - name: image
+    description: all image routes
+  - name: user
+    description: all user routes
+
 paths:
   /image:
     get:
@@ -17,17 +18,13 @@ paths:
       summary: get images data (name, size, creator)
       responses:
         '200':
-          description: secceded
+          description: succeeded
           content:
             application/json:
               schema:
                 type: array
                 items:
                   type: object
-        '400': 
-          description: error while download
-        '500':
-          description: error while accessing image
   /image/{id}:
     get:
       tags:
@@ -35,11 +32,7 @@ paths:
       summary: get image to preview
       responses:
         '200':
-          description: secceded
-        '400': 
-          description: error while download
-        '500':
-          description: error while accessing image
+          description: succeeded
     delete:
       tags:
         - image
@@ -48,9 +41,7 @@ paths:
       summary: delete an image
       responses:
         '200':
-          description: delete secceded
-        '400': 
-          description: error while deleting
+          description: delete succeeded
   /image/{id}/comments:
     get:
       tags:
@@ -58,7 +49,7 @@ paths:
       summary: get all comments on image
       responses:
         '200':
-          description: secceded
+          description: succeeded
           content:
             application/json:
               schema:
@@ -72,32 +63,6 @@ paths:
                       type: string
                     text:
                       type: string
-        '400':
-          description: general error
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-    post:
-      tags:
-        - image
-      security:
-        - bearerAuth: []
-      summary: add a comment on image
-      parameters:
-        - in: path
-          required: true
-          name: body
-          schema:
-            type: object
-            properties:
-              text:
-                type: boolean
-      responses:
-        '200':
-          description: succeded
-        '400':
-          description: general error
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
   /image/upload:
     post:
       tags:
@@ -118,8 +83,8 @@ paths:
                 type: object
       responses:
         '200':
-          description: Upload secceded
-        '401': 
+          description: Upload succeeded
+        '401':
           $ref: '#/components/responses/UnauthorizedError'
   /image/{id}/update:
     post:
@@ -141,8 +106,8 @@ paths:
                 type: object
       responses:
         '200':
-          description: update secceded
-        '401': 
+          description: update succeeded
+        '401':
           $ref: '#/components/responses/UnauthorizedError'
   /user:
     get:
@@ -156,7 +121,7 @@ paths:
           description: returns a user
           content:
             application/json:
-              schema: 
+              schema:
                 type: object
         '401':
           $ref: '#/components/responses/UnauthorizedError'
@@ -169,7 +134,7 @@ paths:
       summary: logout
       responses:
         '200':
-          description: loged out successfully
+          description: logged out successfully
         '401':
           $ref: '#/components/responses/UnauthorizedError'
   /user/login:
@@ -184,7 +149,7 @@ paths:
           schema:
             type: object
             properties:
-              username: 
+              username:
                 type: string
               password:
                 type: string
@@ -193,20 +158,20 @@ paths:
           description: login successfully
           content:
             application/json:
-              schema: 
+              schema:
                 type: object
                 properties:
-                  accessToken: 
+                  accessToken:
                     type: string
                   user:
                     type: object
         '401':
           $ref: '#/components/responses/UnauthorizedError'
-  /user/signin:
+  /user/signup:
     post:
       tags:
         - user
-      summary: signin to the website
+      summary: signup to the website
       parameters:
         - in: path
           required: true
@@ -224,13 +189,13 @@ paths:
                 type: string
       responses:
         '200':
-          description: signin successfully
+          description: signup successfully
           content:
             application/json:
-              schema: 
+              schema:
                 type: object
                 properties:
-                  accessToken: 
+                  accessToken:
                     type: string
                   user:
                     type: object
@@ -251,48 +216,7 @@ paths:
             type: object
       responses:
         '200':
-          description: succeded
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  /user/update/password:
-    post:
-      tags:
-        - user
-      security:
-        - bearerAuth: []
-      summary: update user's password
-      parameters:
-        - in: path
-          required: true
-          name: body
-          schema:
-            type: object
-            properties:
-              oldPassword:
-                type: string
-              newPassword:
-                type: string
-      responses:
-        '200':
-          description: succeded
-        '401':
-          $ref: '#/components/responses/UnauthorizedError'
-  /user/update/image:
-    post:
-      tags:
-        - user
-      security:
-        - bearerAuth: []
-      summary: update user's image
-      parameters:
-        - in: path
-          required: true
-          name: file
-          schema:
-            type: object
-      responses:
-        '200':
-          description: succeded
+          description: succeeded
         '401':
           $ref: '#/components/responses/UnauthorizedError'
 
@@ -302,6 +226,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   responses:
     UnauthorizedError:
       description: Authentication information is missing or invalid
@@ -309,5 +234,6 @@ components:
         Access-Token:
           schema:
             type: string
+
 security:
   - bearerAuth: []
