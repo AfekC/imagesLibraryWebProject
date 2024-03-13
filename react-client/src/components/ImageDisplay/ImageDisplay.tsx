@@ -98,7 +98,7 @@ export const ImageDisplay = () => {
                                 style={{ marginLeft: '80vw' }}
                                 onClick={() => setIsOpen(true)}
                             >
-                                <EditIcon />
+                                {  user?._id === currentImage.creator? <EditIcon  />: null }
                             </IconButton>
                             <CardMedia
                                 component="img"

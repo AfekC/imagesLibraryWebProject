@@ -18,13 +18,19 @@ import { ImageItem } from "./types";
 
 export const ImageLibraryDisplay = () => {
 
-    const { images, addPost, deletePosts } = useMedia();
+    const { images, addPost, deletePosts, updateImages } = useMedia();
     const { user } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [users, setUsers] = useState<Record<string, User>>({});
     const [checked, setChecked] = useState(false);
     const [selectedImages, setSelectedImages] = React.useState<string[]>([]);
+
+    useEffect(() => {
+        updateImages();
+        return () => {
+        }
+    }, []);
 
     useEffect(() => {
         const getAllUserImages = async () => {

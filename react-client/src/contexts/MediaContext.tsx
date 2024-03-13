@@ -19,6 +19,7 @@ interface MediaContextProps {
     updateCurrentImage: (imageId: string) => void;
     deletePosts: (postsIds: string[]) => Promise<void>
     editPost: (imageId: string, imageData: FormData) => Promise<void>;
+    updateImages: () => Promise<void>;
 }
 
 const MediaContext = createContext<MediaContextProps | undefined>(undefined);
@@ -33,20 +34,22 @@ export const MediaProvider: React.FC<MediaProviderProps> = ({ children }) => {
     const { isLogged } = useAuth();
 
     useEffect(() => {
-        const getAllImages = async () => {
-            try {
-                const media = await getAll();
-                media.data.forEach((post) => {
-                    setImages((prevImages) => ({ ...prevImages, [post._id]: post}));
-                });
-            } catch (error: any) {
-               console.error("cannot fetch posts");
-            }
-        };
         if (isLogged) {
-            getAllImages();
+            updateImages();
         }
     }, [isLogged]);
+
+
+    const updateImages = async () => {
+        try {
+            const media = await getAll();
+            media.data.forEach((post) => {
+                setImages((prevImages) => ({ ...prevImages, [post._id]: post}));
+            });
+        } catch (error: any) {
+            console.error("cannot fetch posts");
+        }
+    };
 
     const addPost = async (formData: FormData) => {
         const { data: post } = await uploadImage(formData);
@@ -103,7 +106,8 @@ export const MediaProvider: React.FC<MediaProviderProps> = ({ children }) => {
                 setComments,
                 updateCurrentImage,
                 deletePosts,
-                editPost
+                editPost,
+                updateImages
             }}
         >
             {children}
