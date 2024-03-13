@@ -43,6 +43,7 @@ export const MediaProvider: React.FC<MediaProviderProps> = ({ children }) => {
     const updateImages = async () => {
         try {
             const media = await getAll();
+            setImages({});
             media.data.forEach((post) => {
                 setImages((prevImages) => ({ ...prevImages, [post._id]: post}));
             });
